@@ -1,11 +1,15 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { QUIZ_QUESTIONS } from "@/data/quizData";
+import { QUIZ_QUESTIONS, type QuizQuestion } from "@/data/quizData";
 import {
+  Award,
+  BookOpen,
   CheckCircle2,
   ChevronRight,
+  GlassWater,
   GraduationCap,
   RotateCcw,
+  Shuffle,
   Trophy,
   XCircle,
 } from "lucide-react";
@@ -13,6 +17,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { useCallback, useState } from "react";
 
 type QuizState = "idle" | "answering" | "feedback" | "complete";
+type QuizFocus = "menu" | "forbes" | "wine" | "mix";
 
 function shuffle<T>(arr: T[]): T[] {
   const a = [...arr];
@@ -23,8 +28,62 @@ function shuffle<T>(arr: T[]): T[] {
   return a;
 }
 
+function buildQuestionPool(focus: QuizFocus): QuizQuestion[] {
+  if (focus === "menu") {
+    return shuffle(QUIZ_QUESTIONS.filter((q) => q.category === "menu")).slice(
+      0,
+      10,
+    );
+  }
+  if (focus === "forbes") {
+    return shuffle(QUIZ_QUESTIONS.filter((q) => q.category === "forbes")).slice(
+      0,
+      10,
+    );
+  }
+  if (focus === "wine") {
+    return shuffle(QUIZ_QUESTIONS.filter((q) => q.category === "wine")).slice(
+      0,
+      10,
+    );
+  }
+  return shuffle(QUIZ_QUESTIONS).slice(0, 10);
+}
+
+const FOCUS_OPTIONS: {
+  id: QuizFocus;
+  label: string;
+  sublabel: string;
+  icon: typeof BookOpen;
+}[] = [
+  {
+    id: "menu",
+    label: "Menu Knowledge",
+    sublabel: "Dishes, ingredients & pairings",
+    icon: BookOpen,
+  },
+  {
+    id: "forbes",
+    label: "Forbes Standards",
+    sublabel: "Five-Star service criteria",
+    icon: Award,
+  },
+  {
+    id: "wine",
+    label: "Wine Program",
+    sublabel: "Wines, regions & pairings",
+    icon: GlassWater,
+  },
+  {
+    id: "mix",
+    label: "Mix of All",
+    sublabel: "Full knowledge base",
+    icon: Shuffle,
+  },
+];
+
 export function QuizMode() {
-  const [questions] = useState(() => shuffle(QUIZ_QUESTIONS).slice(0, 10));
+  const [questions, setQuestions] = useState<QuizQuestion[]>([]);
   const [currentIdx, setCurrentIdx] = useState(0);
   const [selectedIdx, setSelectedIdx] = useState<number | null>(null);
   const [quizState, setQuizState] = useState<QuizState>("idle");
@@ -32,18 +91,29 @@ export function QuizMode() {
   const [answeredCorrectly, setAnsweredCorrectly] = useState<boolean | null>(
     null,
   );
+  const [quizFocus, setQuizFocus] = useState<QuizFocus>("mix");
 
   const current = questions[currentIdx];
   const isLast = currentIdx === questions.length - 1;
   const progress =
-    ((currentIdx + (quizState === "feedback" ? 1 : 0)) / questions.length) *
-    100;
+    questions.length > 0
+      ? ((currentIdx + (quizState === "feedback" ? 1 : 0)) / questions.length) *
+        100
+      : 0;
 
-  const handleStart = () => setQuizState("answering");
+  const handleStart = () => {
+    const pool = buildQuestionPool(quizFocus);
+    setQuestions(pool);
+    setCurrentIdx(0);
+    setSelectedIdx(null);
+    setAnsweredCorrectly(null);
+    setScore(0);
+    setQuizState("answering");
+  };
 
   const handleAnswer = useCallback(
     (idx: number) => {
-      if (quizState !== "answering") return;
+      if (quizState !== "answering" || !current) return;
       setSelectedIdx(idx);
       const correct = idx === current.correctIndex;
       setAnsweredCorrectly(correct);
@@ -69,10 +139,13 @@ export function QuizMode() {
     setSelectedIdx(null);
     setAnsweredCorrectly(null);
     setScore(0);
+    setQuizFocus("mix");
+    setQuestions([]);
     setQuizState("idle");
   };
 
   const getScoreMessage = () => {
+    if (!questions.length) return "";
     const pct = score / questions.length;
     if (pct === 1) return "A perfect score — Umi is proud of you.";
     if (pct >= 0.8) return "Excellent work. You are ready for the floor.";
@@ -100,9 +173,9 @@ export function QuizMode() {
           Quiz Mode
         </h1>
         <p className="font-sans text-muted-foreground text-base leading-relaxed">
-          Test your knowledge of the AMA Sushi menu, Japanese culinary
-          traditions, and service philosophy. Ten questions, drawn from our full
-          knowledge base.
+          Test your knowledge of the AMA Sushi menu, Forbes Five-Star service
+          standards, and Japanese culinary traditions. Ten questions, drawn from
+          our full knowledge base.
         </p>
       </motion.div>
 
@@ -114,26 +187,79 @@ export function QuizMode() {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
-            className="bg-card rounded-xl p-8 shadow-card text-center"
+            className="bg-card rounded-xl p-8 shadow-card"
           >
-            <div className="w-16 h-16 mx-auto mb-5 rounded-full bg-gold/15 flex items-center justify-center">
-              <Trophy className="w-8 h-8 text-gold" />
+            <div className="flex flex-col items-center text-center mb-8">
+              <div className="w-16 h-16 mx-auto mb-5 rounded-full bg-gold/15 flex items-center justify-center">
+                <Trophy className="w-8 h-8 text-gold" />
+              </div>
+              <h2 className="font-serif text-2xl text-foreground mb-2">
+                Ready to begin?
+              </h2>
+              <p className="font-sans text-muted-foreground text-sm max-w-xs mx-auto">
+                You will be presented with 10 questions. Choose your focus below
+                to tailor the quiz to what you want to practice.
+              </p>
             </div>
-            <h2 className="font-serif text-2xl text-foreground mb-2">
-              Ready to begin?
-            </h2>
-            <p className="font-sans text-muted-foreground text-sm mb-6 max-w-xs mx-auto">
-              You will be presented with 10 questions covering menu items,
-              dietary information, pairings, and service philosophy.
-            </p>
-            <Button onClick={handleStart} className="font-sans px-8">
-              Begin Quiz
-            </Button>
+
+            {/* Focus selector */}
+            <div className="mb-8">
+              <p className="font-sans text-xs tracking-widest uppercase text-muted-foreground text-center mb-4">
+                What would you like to focus on?
+              </p>
+              <div
+                className="grid grid-cols-2 sm:grid-cols-4 gap-3"
+                aria-label="Quiz focus"
+              >
+                {FOCUS_OPTIONS.map((opt) => {
+                  const Icon = opt.icon;
+                  const isSelected = quizFocus === opt.id;
+                  return (
+                    <button
+                      key={opt.id}
+                      type="button"
+                      aria-pressed={isSelected}
+                      data-ocid={`quiz.focus.${opt.id}.toggle`}
+                      onClick={() => setQuizFocus(opt.id)}
+                      className={`flex flex-col items-center gap-2 rounded-lg border p-4 text-center transition-all duration-200 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/50 ${
+                        isSelected
+                          ? "bg-gold/15 border-gold/40 text-gold shadow-sm"
+                          : "bg-secondary/40 border-border text-muted-foreground hover:bg-secondary/70 hover:border-border/80"
+                      }`}
+                    >
+                      <Icon
+                        className={`w-5 h-5 ${isSelected ? "text-gold" : "text-muted-foreground"}`}
+                      />
+                      <span
+                        className={`font-sans text-sm font-semibold leading-tight ${isSelected ? "text-gold" : "text-foreground"}`}
+                      >
+                        {opt.label}
+                      </span>
+                      <span
+                        className={`font-sans text-xs leading-tight ${isSelected ? "text-gold/70" : "text-muted-foreground"}`}
+                      >
+                        {opt.sublabel}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="flex justify-center">
+              <Button
+                onClick={handleStart}
+                data-ocid="quiz.start.primary_button"
+                className="font-sans px-8"
+              >
+                Begin Quiz
+              </Button>
+            </div>
           </motion.div>
         )}
 
         {/* Answering / Feedback */}
-        {(quizState === "answering" || quizState === "feedback") && (
+        {(quizState === "answering" || quizState === "feedback") && current && (
           <motion.div
             key={`question-${currentIdx}`}
             initial={{ opacity: 0, x: 20 }}
@@ -165,17 +291,35 @@ export function QuizMode() {
               data-ocid="quiz.question.card"
               className="bg-card rounded-xl p-6 md:p-8 shadow-card mb-4"
             >
-              {/* Question type badge */}
-              <Badge
-                variant="secondary"
-                className="mb-4 text-xs font-sans uppercase tracking-wide"
-              >
-                {current.type === "true-false"
-                  ? "True / False"
-                  : current.type === "scenario"
-                    ? "Scenario"
-                    : "Multiple Choice"}
-              </Badge>
+              {/* Question type + category badges */}
+              <div className="flex flex-wrap gap-2 mb-4">
+                <Badge
+                  variant="secondary"
+                  className="text-xs font-sans uppercase tracking-wide"
+                >
+                  {current.type === "true-false"
+                    ? "True / False"
+                    : current.type === "scenario"
+                      ? "Scenario"
+                      : "Multiple Choice"}
+                </Badge>
+                <Badge
+                  variant="outline"
+                  className={`text-xs font-sans uppercase tracking-wide ${
+                    current.category === "forbes"
+                      ? "border-gold/40 text-gold bg-gold/10"
+                      : current.category === "wine"
+                        ? "border-highlight/40 text-highlight bg-highlight/10"
+                        : "border-border text-muted-foreground"
+                  }`}
+                >
+                  {current.category === "forbes"
+                    ? "Forbes Standards"
+                    : current.category === "wine"
+                      ? "Wine Program"
+                      : "Menu Knowledge"}
+                </Badge>
+              </div>
 
               <p className="font-serif text-lg md:text-xl text-foreground leading-relaxed mb-6">
                 {current.question}
@@ -288,7 +432,11 @@ export function QuizMode() {
                 transition={{ delay: 0.2 }}
                 className="flex justify-end"
               >
-                <Button onClick={handleNext} className="font-sans gap-2">
+                <Button
+                  onClick={handleNext}
+                  data-ocid="quiz.next.primary_button"
+                  className="font-sans gap-2"
+                >
                   {isLast ? "See Results" : "Next Question"}
                   <ChevronRight className="w-4 h-4" />
                 </Button>
@@ -329,6 +477,7 @@ export function QuizMode() {
             </p>
             <Button
               onClick={handleRestart}
+              data-ocid="quiz.restart.secondary_button"
               variant="outline"
               className="font-sans gap-2"
             >

@@ -84,6 +84,9 @@
     --gold: 0.72 0.1 75;
     --gold-light: 0.88 0.06 82;
 
+    /* Rose accent — for Rosé wine category */
+    --rose: 0.62 0.13 10;
+
     /* Ink dark */
     --ink: 0.14 0.03 50;
 
@@ -140,6 +143,9 @@
 
     --gold: 0.78 0.1 78;
     --gold-light: 0.68 0.08 78;
+
+    /* Rose accent — dark mode */
+    --rose: 0.68 0.13 12;
 
     --ink: 0.94 0.015 75;
 
@@ -205,6 +211,10 @@
 
   .bg-highlight {
     background-color: oklch(var(--highlight));
+  }
+
+  .text-rose {
+    color: oklch(var(--rose));
   }
 
   .border-separator {

@@ -62,6 +62,9 @@ export default {
           DEFAULT: "oklch(var(--gold))",
           light: "oklch(var(--gold-light))",
         },
+        rose: {
+          DEFAULT: "oklch(var(--rose))",
+        },
         ink: "oklch(var(--ink))",
         chart: {
           1: "oklch(var(--chart-1))",
