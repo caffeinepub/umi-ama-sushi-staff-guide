@@ -1,7 +1,7 @@
 export type QuizQuestion = {
   id: number;
   type: "multiple-choice" | "true-false" | "scenario";
-  category: "menu" | "forbes" | "wine";
+  category: "menu" | "forbes" | "wine" | "sake";
   question: string;
   options: string[];
   correctIndex: number;
@@ -515,5 +515,193 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     correctIndex: 1,
     explanation:
       "The Punta Crena Vermentino ($25/glass) and Domaine Laporte Sancerre ($30/glass) are the ideal lighter, refreshing whites to open a meal. The Vermentino has bright citrus, sea-spray salinity, and vibrant acidity from coastal Liguria. The Sancerre is pure, mineral, and crisp from an organic Loire Valley estate. Both are elegant and food-friendly starters.",
+  },
+
+  // ── SAKE ──────────────────────────────────────────────────────────────────
+  {
+    id: 38,
+    type: "multiple-choice",
+    category: "sake",
+    question: "What does 'Junmai' mean in sake terminology?",
+    options: [
+      "Rice polished to 50% — the highest grade",
+      "Pure rice sake — no distilled alcohol added",
+      "Unfiltered sake with rice particles remaining",
+      "Sake fermented at cold temperatures for fruity aromatics",
+    ],
+    correctIndex: 1,
+    explanation:
+      "'Jun' means pure, 'mai' means rice. Junmai sake is brewed from rice, water, yeast, and koji — with no added distilled alcohol. This results in a richer, more umami-forward flavor profile compared to Honjozo. All classifications with 'Junmai' in the name share this characteristic.",
+  },
+  {
+    id: 39,
+    type: "multiple-choice",
+    category: "sake",
+    question:
+      "A guest asks for the driest sake on the list. Which do you recommend?",
+    options: [
+      "Masumi Sparkling Origarami (SMV -45)",
+      "IWA 5 Assemblage 3 (SMV -1.5)",
+      "Asian Beauty Junmai Daiginjo (SMV +6)",
+      "Road to Osaka Nigori (SMV +4)",
+    ],
+    correctIndex: 2,
+    explanation:
+      "The Asian Beauty Junmai Daiginjo has an SMV of +6 — the highest positive value on the list, making it the driest. The Gentleman (Tokubetsu Junmai) and Road to Osaka Nigori are both SMV +4. The Masumi Sparkling at SMV -45 is the sweetest on the list by a wide margin.",
+  },
+  {
+    id: 40,
+    type: "multiple-choice",
+    category: "sake",
+    question:
+      "What makes IWA 5 'Assemblage 3' unique compared to all other sakes on our list?",
+    options: [
+      "It is the only naturally carbonated sake on the list",
+      "It is brewed exclusively with Yamadanishiki rice, the king of sake rice",
+      "It was created by the former cellar master of Dom Pérignon, blended like Champagne from multiple batches, and aged 15 months",
+      "It is the only Nigori sake on the list — unfiltered with rice particles",
+    ],
+    correctIndex: 2,
+    explanation:
+      "IWA 5 is extraordinary for three interconnected reasons: it was created by Richard Geoffroy, the former cellar master of Dom Pérignon; it is assembled from dozens of individual sake batches like a Champagne cuvée; and it is aged 15 months before release. Shiraiwa K.K. was founded only in 2019, yet immediately became one of the world's most talked-about luxury sake projects.",
+  },
+  {
+    id: 41,
+    type: "multiple-choice",
+    category: "sake",
+    question:
+      "What is a Nigori sake, and how would you describe it to a guest?",
+    options: [
+      "A sake fermented twice, resulting in higher alcohol content",
+      "A sparkling sake naturally carbonated in the bottle",
+      "An unfiltered sake — rice particles remain, creating cloudiness and a creamy texture",
+      "A sake aged in wood barrels for added complexity",
+    ],
+    correctIndex: 2,
+    explanation:
+      "Nigori sake is left unfiltered (or coarsely filtered), so rice particles remain in the brew — creating its characteristic cloudy appearance and creamy texture. To guests, you might say: 'Our nigori is slightly cloudy from the rice particles left in — it has a beautiful creamy texture, though the Road to Osaka finishes surprisingly dry with a fresh citrus character.'",
+  },
+  {
+    id: 42,
+    type: "multiple-choice",
+    category: "sake",
+    question:
+      "What does SMV stand for, and what does a positive number indicate?",
+    options: [
+      "Sake Milling Value — higher numbers mean more rice has been polished away",
+      "Sake Meter Value — a positive number indicates the sake is drier",
+      "Sake Meter Value — a positive number indicates the sake is sweeter",
+      "Standard Mash Volume — a measure of fermentation intensity",
+    ],
+    correctIndex: 1,
+    explanation:
+      "SMV stands for Sake Meter Value. It measures the relative density of the sake compared to water — which corresponds to sweetness/dryness. Positive numbers indicate drier sake (less residual sugar). Negative numbers indicate sweeter sake. Our range spans from -45 (Masumi Sparkling — very sweet) to +6 (Asian Beauty — noticeably dry).",
+  },
+  {
+    id: 43,
+    type: "multiple-choice",
+    category: "sake",
+    question:
+      "Which sake on our list is naturally carbonated in the bottle, similar to pét-nat wine?",
+    options: [
+      "IWA 5 Junmai Daiginjo 'Assemblage 3'",
+      "Ban Ryu Honjozo '10,000 Ways'",
+      "Masumi Sparkling 'Origarami' Junmai Ginjo",
+      "Road to Osaka Nigori",
+    ],
+    correctIndex: 2,
+    explanation:
+      "The Masumi Sparkling 'Origarami' is naturally carbonated by finishing fermentation inside the bottle — the same method used in pét-nat winemaking. Fine rice lees (origarami) are intentionally left in, creating its characteristic light cloudiness and creamy mousse texture. It is made by Miyasaka Brewing Company, established 1662.",
+  },
+  {
+    id: 44,
+    type: "multiple-choice",
+    category: "sake",
+    question:
+      "The Masumi Sparkling has an SMV of -45. What does this tell you about the sake?",
+    options: [
+      "It is the driest sake on the list — the high negative value means it's very tannic",
+      "It is very sweet — the sweetest on the list. This balances the effervescence and lactic notes from the rice lees",
+      "It has no residual sugar — -45 refers to the carbonation level, not sweetness",
+      "It is a neutral sake — the -45 refers to the fermentation temperature used",
+    ],
+    correctIndex: 1,
+    explanation:
+      "A very low (highly negative) SMV means the sake is very sweet. At -45, the Masumi Sparkling is by far the sweetest on our list. This sweetness is intentional — it balances the vivacious effervescence and the lactic, creamy notes from the rice lees, creating a beautifully refreshing, celebratory glass.",
+  },
+  {
+    id: 45,
+    type: "multiple-choice",
+    category: "sake",
+    question:
+      "Which rice variety is used in both the IWA 5 Assemblage 3 and Masumi Sparkling, and why is it significant?",
+    options: [
+      "Tsuyahime — a Yamagata table rice prized for sweetness and umami",
+      "Gohyakumangoku — a large-grain rice producing clean, crisp styles",
+      "Yamada Nishiki — known as the 'king of sake rice,' prized for premium brewing",
+      "Matsuyama Mii — a rare rice grown near underground river water sources",
+    ],
+    correctIndex: 2,
+    explanation:
+      "Yamada Nishiki is considered the 'king of sake rice.' It is prized for its large, starchy grain with a well-defined shinpaku (starchy core), low protein content, and resistance to crumbling during polishing. It is the preferred rice for premium Daiginjo-class sakes throughout Japan. IWA 5 uses it as one of three blended rice varieties; Masumi Sparkling uses it as its sole rice variety.",
+  },
+  {
+    id: 46,
+    type: "scenario",
+    category: "sake",
+    question:
+      "A guest is enjoying their first sake ever and asks for your recommendation. What do you pour and why?",
+    options: [
+      "IWA 5 Assemblage 3 — it is the most complex and will show them the full range",
+      "Ban Ryu Honjozo — clean, light, approachable, can be served at any temperature, widest food pairing range",
+      "Masumi Sparkling — the bubbles make it the most approachable for a first-timer",
+      "Asian Beauty Junmai Daiginjo — the tropical fruit notes are easy to understand",
+    ],
+    correctIndex: 1,
+    explanation:
+      "Ban Ryu Honjozo is ideal for a first-time sake guest: it is light, clean, and approachable; it can be served chilled, at room temperature, or warmed; and it pairs with almost anything on the menu. You might say: 'Our most approachable sake — clean, dry, and beautifully food-friendly. It can be served any way you like, and it pairs wonderfully with everything this evening.'",
+  },
+  {
+    id: 47,
+    type: "multiple-choice",
+    category: "sake",
+    question:
+      "What does a lower rice milling percentage indicate about a sake's quality?",
+    options: [
+      "More bran and protein remain on the grain, resulting in earthier, heavier flavors",
+      "More of the outer grain has been polished away, leaving only the pure starchy core — resulting in more delicate, refined sake",
+      "The sake was fermented at lower temperatures, producing sweeter flavors",
+      "The sake contains more added alcohol, making it lighter and less expensive",
+    ],
+    correctIndex: 1,
+    explanation:
+      "Rice milling percentage refers to how much of the original grain remains after polishing. A lower number means more has been polished away — leaving only the pure, starchy shinpaku core. This core ferments more cleanly and produces more delicate, aromatic, refined sake. For context: Daiginjo requires at least 50% to be polished away; Honjozo requires at least 30%.",
+  },
+  {
+    id: 48,
+    type: "multiple-choice",
+    category: "sake",
+    question:
+      "Which brewery discovered Yeast No. 7, now used by breweries across Japan?",
+    options: [
+      "Fuji Brewery — makers of Ban Ryu '10,000 Ways'",
+      "Daimon Shuzo — makers of Road to Osaka Nigori",
+      "Miyasaka Brewing Company — makers of Masumi Sparkling",
+      "Sumikawa Shuzojo — makers of Asian Beauty",
+    ],
+    correctIndex: 2,
+    explanation:
+      "Miyasaka Brewing Company, established in 1662 in Suwa, Nagano Prefecture, is renowned for discovering Yeast No. 7 — a cornerstone yeast now used by breweries throughout Japan to achieve clean, reliable fermentation. Their flagship sake on our list is the Masumi Sparkling 'Origarami' Junmai Ginjo.",
+  },
+  {
+    id: 49,
+    type: "true-false",
+    category: "sake",
+    question:
+      "True or False: IWA 5 was founded over 100 years ago and is one of Japan's oldest breweries.",
+    options: ["True", "False"],
+    correctIndex: 1,
+    explanation:
+      "False. Shiraiwa K.K. — the company behind IWA 5 — was founded only in 2019. Despite being one of the newest breweries on our list, it immediately became one of the most talked-about luxury sake projects in the world, thanks to its founder Richard Geoffroy, the former cellar master of Dom Pérignon. Compare this to Ban Ryu's Fuji Brewery (founded 1778) or Masumi's Miyasaka (founded 1662).",
   },
 ];

@@ -1,37 +1,36 @@
-# Gooni (Umi — AMA Sushi Staff Education)
+# Gooni — Umi AMA Sushi Staff Training Platform
 
 ## Current State
-The app has Study, Quiz, Chat, and Glossary tabs. It knows the full AMA Sushi menu, Forbes Five-Star standards, and Japanese culinary glossary. Quiz mode covers Menu and Forbes categories. Chat mode (chatEngine.ts) answers questions about menu items, allergens, pairings, and Forbes standards.
+The app is a full-stack staff training platform for AMA Sushi at Rosewood Miramar Beach. It features:
+- **Study Mode**: Menu sections (Starters, Zensai, Mains, Specialty Rolls, Classic Rolls, Dessert) and a Wine Program tab with 13 wines
+- **Quiz Mode**: Questions across menu, Forbes service standards, and wine categories
+- **Chat Mode**: Umi chat engine with knowledge of menu items, Forbes standards, wine data, and glossary
+- **Glossary Tab**: 30 Japanese culinary terms
+
+The sake program is referenced only as beverage pairings inside menu items (menuData.ts). There is no dedicated sake data file, no Sake tab in Study Mode, no sake-specific quiz questions, and the chat engine has only a brief generic sake fallback response.
 
 ## Requested Changes (Diff)
 
 ### Add
-- **Wine data file** (`src/data/wineData.ts`) — 13 wines organized into 4 categories (Champagne & Sparkling, White Wines, Rosé, Red Wines) with full detail per wine: name, pronunciation, region, grapes, glassWine (flute / Burgundy / Bordeaux / AP), glassPrice, bottlePrice, tastingNotes, winemaking, keyFacts, foodPairing, guestOneLiner.
-- **Wine tab** in Study Mode — a new tab section labeled "Wine" inside StudyMode that renders wine cards. Each card shows: name, pronunciation (if applicable), region, grape varieties, glass/bottle price, glassware, tasting notes, winemaking notes, key facts, food pairing (if listed), and the guest one-liner. Cards grouped by category with category headers.
-- **Wine quiz questions** (12 new questions) added to `quizData.ts` with `category: "wine"` — drawn from the provided wine quiz question bank.
-- **Quiz mode update** — the quiz focus prompt now offers "Menu Knowledge", "Forbes Service Standards", "Wine Program", or "Mix of All". Wine category questions are selectable.
-- **Chat engine updates** — add wine-aware responses to `chatEngine.ts`:
-  - Pronunciation queries ("how do you say", "pronounce")
-  - Wine pairing queries ("what wine", "wine with", "suggest a wine")
-  - Specific wine lookups by name
-  - Price queries ("how much is", "price of")
-  - Glassware queries ("what glass", "glassware for")
-  - General wine program overview
+- `src/frontend/src/data/sakeData.ts` — full sake program data: 6 sakes with classification, region, rice variety, milling %, SMV, ABV, acidity, aroma, palate, winemaking notes, brewery history, guest one-liner, food pairing, glassware, and pricing
+- Sake fundamentals data: 8 classification definitions (Honjozo through Nigori), SMV explanation, rice milling % explanation, and the "Sake Ladder" (6-step progression)
+- `src/frontend/src/components/SakeSection.tsx` — Study Mode panel for the sake program, styled to match WineSection
+- 12 sake quiz questions in `quizData.ts` (new `"sake"` category), covering classifications, SMV, rice varietals, brewery facts, and guest scenario questions
+- Robust sake-specific response handlers in `chatEngine.ts` covering: sake overview, individual sake lookups, classification questions, SMV, rice milling, sake ladder, food pairing, brewery history
 
 ### Modify
-- `quizData.ts` — append 12 wine quiz questions.
-- `chatEngine.ts` — extend with wine knowledge and response handlers.
-- `StudyMode.tsx` — add "Wine" as a tab section that renders `WineSection` component.
-- `QuizMode.tsx` — update category selector to include "Wine Program" option.
+- `src/frontend/src/components/StudyMode.tsx` — add a "Sake Program" tab alongside the existing Wine Program tab; render `<SakeSection />` when active
+- `src/frontend/src/data/chatEngine.ts` — replace the generic sake fallback with rich sake-specific handlers using `findSake()` and sake fundamentals knowledge
+- `src/frontend/src/components/QuizMode.tsx` — include `"sake"` as a selectable quiz category option (alongside menu, forbes, wine)
+- `src/frontend/src/data/quizData.ts` — add 12 sake questions with category `"sake"`
 
 ### Remove
-- Nothing removed.
+- Nothing removed
 
 ## Implementation Plan
-1. Create `src/data/wineData.ts` with all 13 wines and full detail.
-2. Append 12 wine quiz questions to `quizData.ts` with `category: "wine"`.
-3. Update `chatEngine.ts` with wine-related response logic.
-4. Create `WineSection.tsx` component for rendering wine cards in Study Mode.
-5. Update `StudyMode.tsx` to add a "Wine" section tab that renders `WineSection`.
-6. Update `QuizMode.tsx` to include "Wine Program" as a quiz category filter option.
-7. Validate (typecheck, lint, build).
+1. Create `sakeData.ts` with full type definitions, 6 sake entries, fundamentals, and `findSake()` utility
+2. Add 12 sake quiz questions to `quizData.ts` with category `"sake"`
+3. Update `chatEngine.ts` to import sakeData and handle: individual sake lookups, classification questions (junmai, daiginjo, nigori, honjozo, SMV, milling, etc.), sake ladder, sake program overview
+4. Create `SakeSection.tsx` component mirroring WineSection's layout with sake-specific fields (SMV badge, milling %, rice varietal, sake ladder)
+5. Update `StudyMode.tsx` to add a Sake Program tab and render `<SakeSection />`
+6. Update `QuizMode.tsx` to include sake as a quiz category option

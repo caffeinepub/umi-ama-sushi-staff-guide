@@ -1,5 +1,12 @@
 import { GLOSSARY_TERMS } from "./glossaryData";
 import { ALL_MENU_ITEMS, MENU_SECTIONS, type MenuItem } from "./menuData";
+import {
+  SAKES,
+  SAKE_CLASSIFICATIONS,
+  SAKE_LADDER,
+  findSake,
+  smvLabel,
+} from "./sakeData";
 import { WINES, findWine } from "./wineData";
 
 type ChatResponse = {
@@ -421,6 +428,117 @@ export function generateResponse(userMessage: string): ChatResponse {
     }
   }
 
+  // ── SAKE-SPECIFIC HANDLERS ─────────────────────────────────────────────────
+
+  // Individual sake lookup
+  const specificSake = findSake(q);
+  if (
+    specificSake &&
+    (q.includes("sake") ||
+      q.includes(specificSake.id) ||
+      q.includes(specificSake.name.toLowerCase().split(" ")[0]))
+  ) {
+    const carafeNote = specificSake.carafePrice
+      ? ` · Carafe: $${specificSake.carafePrice}`
+      : " · No carafe available";
+    const serveNote = specificSake.serveTemp
+      ? `\n\n*Serve:* ${specificSake.serveTemp}`
+      : "";
+    return {
+      text: `**${specificSake.name}**\n\n*Classification:* ${specificSake.classification}\n*Region:* ${specificSake.region}\n*Rice:* ${specificSake.rice} · *Milling:* ${specificSake.milling}% remaining\n*SMV:* ${specificSake.smv > 0 ? "+" : ""}${specificSake.smv} (${smvLabel(specificSake.smv)}) · *ABV:* ${specificSake.abv}% · *Acidity:* ${specificSake.acidity}\n*Glassware:* ${specificSake.glassware}\n*Price:* $${specificSake.glassPrice}/glass${carafeNote}\n\n*Aroma:* ${specificSake.aroma}\n\n*Palate:* ${specificSake.palate}\n\n*Food Pairing at AMA:* ${specificSake.foodPairing}${serveNote}\n\n*"${specificSake.guestOneLiner}"*`,
+    };
+  }
+
+  // Sake classifications — explain what a term means
+  if (
+    q.includes("junmai daiginjo") ||
+    q.includes("daiginjo") ||
+    q.includes("junmai ginjo") ||
+    q.includes("ginjo") ||
+    q.includes("tokubetsu junmai") ||
+    q.includes("honjozo") ||
+    (q.includes("sake") && q.includes("classification"))
+  ) {
+    // Find specific classification
+    const classMatch = SAKE_CLASSIFICATIONS.find((c) =>
+      q.includes(c.name.toLowerCase()),
+    );
+    if (classMatch) {
+      return {
+        text: `**${classMatch.name}** — ${classMatch.description}\n\n*Milling:* ${classMatch.millingNote}\n\nOn our list: ${
+          SAKES.filter((s) =>
+            s.classification
+              .toLowerCase()
+              .includes(classMatch.name.toLowerCase()),
+          )
+            .map((s) => s.name)
+            .join(", ") || "No exact match — see related classifications."
+        }`,
+      };
+    }
+    // General classifications overview
+    return {
+      text: `**Sake Classifications — from lightest to most refined:**\n\n${SAKE_CLASSIFICATIONS.map((c) => `**${c.name}** — ${c.description}`).join("\n\n")}`,
+    };
+  }
+
+  // SMV explanation
+  if (
+    q.includes("smv") ||
+    q.includes("sake meter") ||
+    (q.includes("sweet") && q.includes("dry") && q.includes("sake")) ||
+    (q.includes("sweetness") && q.includes("sake")) ||
+    (q.includes("dryness") && q.includes("sake"))
+  ) {
+    return {
+      text: "**Sake Meter Value (SMV)** measures the relative density of sake compared to water — which directly corresponds to sweetness or dryness.\n\n- **Positive numbers = drier** (less residual sugar)\n- **Negative numbers = sweeter** (more residual sugar)\n\nOn our list:\n\n| Sake | SMV | Character |\n|------|-----|-----------|\n| Masumi Sparkling | -45 | Very sweet |\n| IWA 5 Assemblage 3 | -1.5 | Very slightly sweet |\n| Ban Ryu Honjozo | +1 | Near-neutral |\n| The Gentleman | +4 | Dry |\n| Road to Osaka Nigori | +4 | Dry for a nigori |\n| Asian Beauty | +6 | Noticeably dry |\n\nFor guests who ask: 'Our driest sake is the Asian Beauty at SMV +6 — crisp and lively. Our sweetest is the Masumi Sparkling at -45, which balances beautifully with its natural effervescence.'",
+    };
+  }
+
+  // Rice milling explanation
+  if (
+    (q.includes("milling") ||
+      q.includes("polishing") ||
+      q.includes("polished") ||
+      q.includes("rice percent") ||
+      q.includes("rice milling")) &&
+    q.includes("sake")
+  ) {
+    return {
+      text: "**Rice Milling in Sake:**\n\nThe milling percentage refers to how much of the original rice grain *remains* after polishing. The outer layers of a rice grain contain proteins and fats that can produce undesirable flavors when fermented — so the more that is polished away, the purer and more refined the resulting sake.\n\n- **Lower % = higher grade = more delicate flavor**\n\nMinimum milling requirements by classification:\n- Daiginjo: 50% remaining (50% polished away)\n- Ginjo: 60% remaining\n- Tokubetsu Junmai: 60% remaining\n- Honjozo: 70% remaining\n\nOn our list, the Road to Osaka Nigori is milled to just 40% remaining — one of the most refined millings on the list, despite being a Nigori style.",
+    };
+  }
+
+  // Sake ladder
+  if (
+    (q.includes("sake ladder") ||
+      q.includes("where to start") ||
+      q.includes("recommend a sake") ||
+      q.includes("which sake") ||
+      q.includes("sake recommend")) &&
+    q.includes("sake")
+  ) {
+    return {
+      text: `**The Sake Ladder** — guide guests from approachable to premium:\n\n${SAKE_LADDER.map((s) => `**${s.step}. ${s.name}** — ${s.descriptor}`).join("\n")}\n\nFor first-time sake guests, begin at step 1 — Ban Ryu Honjozo. For guests comfortable with wine who want something expressive, step 5 or 6 is a natural entry into sake's premium range.`,
+    };
+  }
+
+  // Sake program overview
+  if (
+    q.includes("sake program") ||
+    q.includes("sake list") ||
+    q.includes("sake menu") ||
+    q.includes("sake by the glass") ||
+    (q.includes("sake") &&
+      (q.includes("selection") ||
+        q.includes("all sake") ||
+        q.includes("what sake")))
+  ) {
+    return {
+      text: `Our sake program spans six curated selections:\n\n${SAKES.map((s) => `**${s.name}** — ${s.classification} · $${s.glassPrice}/glass${s.carafePrice ? ` · $${s.carafePrice}/carafe` : ""}`).join("\n")}\n\nClassifications range from Honjozo (approachable, versatile) to Junmai Daiginjo (the pinnacle of refinement). Styles include sparkling, dry, mineral, aromatic, and creamy Nigori. Please explore the Sake Program tab in Study Mode for full tasting notes and service details.`,
+    };
+  }
+
   // Wine pairing query — check wine data in addition to menu items
   if (
     q.includes("pair") ||
@@ -429,6 +547,19 @@ export function generateResponse(userMessage: string): ChatResponse {
     q.includes("wine") ||
     q.includes("sake")
   ) {
+    // Check sake first if "sake" is in query
+    if (q.includes("sake")) {
+      const sakeMatch = findSake(q);
+      if (sakeMatch) {
+        const carafeNote = sakeMatch.carafePrice
+          ? ` · Carafe: $${sakeMatch.carafePrice}`
+          : "";
+        return {
+          text: `**${sakeMatch.name}** — *"${sakeMatch.guestOneLiner}"*\n\n*Pairs beautifully with:* ${sakeMatch.foodPairing}\n\nClassification: ${sakeMatch.classification} · SMV: ${sakeMatch.smv > 0 ? "+" : ""}${sakeMatch.smv} (${smvLabel(sakeMatch.smv)}) · $${sakeMatch.glassPrice}/glass${carafeNote}`,
+        };
+      }
+    }
+
     const wine = findWine(q);
     if (wine) {
       const pairingNote = wine.foodPairing
@@ -444,10 +575,10 @@ export function generateResponse(userMessage: string): ChatResponse {
       return { text: `**${item.name}** — ${formatPairing(item)}` };
     }
 
-    // General sake info
-    if (q.includes("sake") && !findMenuItem(q)) {
+    // General sake info fallback
+    if (q.includes("sake")) {
       return {
-        text: "Our sake program spans Junmai Ginjo, Tokubetsu Junmai, Junmai Daiginjo, and Nigori styles, curated to complement each section of the menu. Junmai Daiginjo — rice polished to at least 50% — offers the most aromatic and refined expression, ideal alongside our seafood and wagyu dishes. Please refer to the specific pairing listed for each dish on the menu for the most precise recommendation.",
+        text: "Our sake program spans six curated selections — from the approachable Ban Ryu Honjozo ($14/glass) to the extraordinary IWA 5 Junmai Daiginjo ($110/glass), created by the former cellar master of Dom Pérignon.\n\nFor guests new to sake, begin with **Ban Ryu** — clean, versatile, and food-friendly. For guests who love aromatic whites, **Asian Beauty** or **The Gentleman** are natural bridges. For a celebration, the **Masumi Sparkling** is a beautiful choice.\n\nAsk me about any specific sake for full tasting notes and food pairing suggestions.",
       };
     }
   }

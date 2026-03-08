@@ -6,6 +6,7 @@ import {
   BookOpen,
   CheckCircle2,
   ChevronRight,
+  Droplets,
   GlassWater,
   GraduationCap,
   RotateCcw,
@@ -17,7 +18,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { useCallback, useState } from "react";
 
 type QuizState = "idle" | "answering" | "feedback" | "complete";
-type QuizFocus = "menu" | "forbes" | "wine" | "mix";
+type QuizFocus = "menu" | "forbes" | "wine" | "sake" | "mix";
 
 function shuffle<T>(arr: T[]): T[] {
   const a = [...arr];
@@ -43,6 +44,12 @@ function buildQuestionPool(focus: QuizFocus): QuizQuestion[] {
   }
   if (focus === "wine") {
     return shuffle(QUIZ_QUESTIONS.filter((q) => q.category === "wine")).slice(
+      0,
+      10,
+    );
+  }
+  if (focus === "sake") {
+    return shuffle(QUIZ_QUESTIONS.filter((q) => q.category === "sake")).slice(
       0,
       10,
     );
@@ -73,6 +80,12 @@ const FOCUS_OPTIONS: {
     label: "Wine Program",
     sublabel: "Wines, regions & pairings",
     icon: GlassWater,
+  },
+  {
+    id: "sake",
+    label: "Sake Knowledge",
+    sublabel: "Classifications, SMV & sakes",
+    icon: Droplets,
   },
   {
     id: "mix",
@@ -219,7 +232,11 @@ export function QuizMode() {
                       key={opt.id}
                       type="button"
                       aria-pressed={isSelected}
-                      data-ocid={`quiz.focus.${opt.id}.toggle`}
+                      data-ocid={
+                        opt.id === "sake"
+                          ? "quiz.sake.tab"
+                          : `quiz.focus.${opt.id}.toggle`
+                      }
                       onClick={() => setQuizFocus(opt.id)}
                       className={`flex flex-col items-center gap-2 rounded-lg border p-4 text-center transition-all duration-200 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/50 ${
                         isSelected
@@ -310,14 +327,18 @@ export function QuizMode() {
                       ? "border-gold/40 text-gold bg-gold/10"
                       : current.category === "wine"
                         ? "border-highlight/40 text-highlight bg-highlight/10"
-                        : "border-border text-muted-foreground"
+                        : current.category === "sake"
+                          ? "border-rose/40 text-rose bg-rose/10"
+                          : "border-border text-muted-foreground"
                   }`}
                 >
                   {current.category === "forbes"
                     ? "Forbes Standards"
                     : current.category === "wine"
                       ? "Wine Program"
-                      : "Menu Knowledge"}
+                      : current.category === "sake"
+                        ? "Sake Knowledge"
+                        : "Menu Knowledge"}
                 </Badge>
               </div>
 

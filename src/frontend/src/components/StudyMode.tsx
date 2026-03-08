@@ -1,7 +1,8 @@
+import { SakeSection } from "@/components/SakeSection";
 import { WineSection } from "@/components/WineSection";
 import { Badge } from "@/components/ui/badge";
 import { MENU_SECTIONS } from "@/data/menuData";
-import { AlertCircle, ChefHat, Info, Wine } from "lucide-react";
+import { AlertCircle, ChefHat, Droplets, Info, Wine } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
 
@@ -11,9 +12,11 @@ export function StudyMode() {
   );
 
   const isWineSection = activeSection === "wine";
-  const section = !isWineSection
-    ? (MENU_SECTIONS.find((s) => s.id === activeSection) ?? MENU_SECTIONS[0])
-    : null;
+  const isSakeSection = activeSection === "sake";
+  const section =
+    !isWineSection && !isSakeSection
+      ? (MENU_SECTIONS.find((s) => s.id === activeSection) ?? MENU_SECTIONS[0])
+      : null;
 
   return (
     <div className="w-full max-w-5xl mx-auto px-4 pb-16">
@@ -27,20 +30,32 @@ export function StudyMode() {
         <div className="flex items-center gap-3 mb-2">
           {isWineSection ? (
             <Wine className="w-5 h-5 text-gold" />
+          ) : isSakeSection ? (
+            <Droplets className="w-5 h-5 text-gold" />
           ) : (
             <ChefHat className="w-5 h-5 text-gold" />
           )}
           <span className="text-sm tracking-widest uppercase font-sans text-muted-foreground">
-            {isWineSection ? "Wine Program" : "Menu Study"}
+            {isWineSection
+              ? "Wine Program"
+              : isSakeSection
+                ? "Sake Program"
+                : "Menu Study"}
           </span>
         </div>
         <h1 className="font-serif text-3xl md:text-4xl text-foreground mb-3">
-          {isWineSection ? "Wine by the Glass" : "Study the Menu"}
+          {isWineSection
+            ? "Wine by the Glass"
+            : isSakeSection
+              ? "Sake by the Glass"
+              : "Study the Menu"}
         </h1>
         <p className="font-sans text-muted-foreground text-base leading-relaxed max-w-xl">
           {isWineSection
             ? "Our complete wine by the glass program — 13 selections spanning Champagne, white, rosé, and red wines. Tasting notes, winemaking details, pricing, glassware, and guest-facing descriptions."
-            : "Explore each section of the AMA Sushi menu — ingredients, dietary information, beverage pairings, and the service notes that elevate every dish."}
+            : isSakeSection
+              ? "Our curated sake by the glass program — 6 selections from Honjozo to Junmai Daiginjo. Classifications, rice varietals, SMV, tasting notes, brewery stories, and guest-facing descriptions."
+              : "Explore each section of the AMA Sushi menu — ingredients, dietary information, beverage pairings, and the service notes that elevate every dish."}
         </p>
       </motion.div>
 
@@ -81,6 +96,20 @@ export function StudyMode() {
             <Wine className="w-3.5 h-3.5" />
             Wine Program
           </button>
+          {/* Sake tab */}
+          <button
+            type="button"
+            data-ocid="study.sake.tab"
+            onClick={() => setActiveSection("sake")}
+            className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-sans font-medium transition-all duration-200 whitespace-nowrap ${
+              activeSection === "sake"
+                ? "bg-primary text-primary-foreground shadow-xs"
+                : "bg-secondary text-secondary-foreground hover:bg-accent hover:text-accent-foreground"
+            }`}
+          >
+            <Droplets className="w-3.5 h-3.5" />
+            Sake Program
+          </button>
         </div>
       </motion.div>
 
@@ -95,6 +124,8 @@ export function StudyMode() {
         >
           {isWineSection ? (
             <WineSection />
+          ) : isSakeSection ? (
+            <SakeSection />
           ) : section ? (
             <>
               {/* Section heading */}
