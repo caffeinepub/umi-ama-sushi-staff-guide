@@ -7,6 +7,13 @@ import {
   findSake,
   smvLabel,
 } from "./sakeData";
+import {
+  BURGUNDY_KEY_TERMS,
+  BURGUNDY_VILLAGES,
+  VILLAGE_POSITIONING,
+  WHITE_BURGUNDY_WINES,
+  findWhiteBurgundy,
+} from "./whiteBurgundyData";
 import { WINES, findWine } from "./wineData";
 
 type ChatResponse = {
@@ -536,6 +543,103 @@ export function generateResponse(userMessage: string): ChatResponse {
   ) {
     return {
       text: `Our sake program spans six curated selections:\n\n${SAKES.map((s) => `**${s.name}** — ${s.classification} · $${s.glassPrice}/glass${s.carafePrice ? ` · $${s.carafePrice}/carafe` : ""}`).join("\n")}\n\nClassifications range from Honjozo (approachable, versatile) to Junmai Daiginjo (the pinnacle of refinement). Styles include sparkling, dry, mineral, aromatic, and creamy Nigori. Please explore the Sake Program tab in Study Mode for full tasting notes and service details.`,
+    };
+  }
+
+  // ── WHITE BURGUNDY HANDLERS ────────────────────────────────────────────────
+
+  // Burgundy key terms — explain specific terminology
+  const burgundyTermMatch = BURGUNDY_KEY_TERMS.find((t) =>
+    q.includes(t.term.toLowerCase().replace(/[^a-z0-9\s]/g, "")),
+  );
+  const hasBurgundyTermQuery =
+    q.includes("kimmeridgian") ||
+    q.includes("lutte raisonnee") ||
+    q.includes("lutte raisonnee") ||
+    q.includes("batonnage") ||
+    q.includes("batonnage") ||
+    q.includes("climat") ||
+    (q.includes("premier cru") && q.includes("burgundy")) ||
+    (q.includes("1er cru") && q.includes("burgundy"));
+
+  if (burgundyTermMatch || hasBurgundyTermQuery) {
+    if (burgundyTermMatch) {
+      return {
+        text: `**${burgundyTermMatch.term}** — ${burgundyTermMatch.definition}`,
+      };
+    }
+    return {
+      text: `**Key Burgundy Terms:**\n\n${BURGUNDY_KEY_TERMS.map((t) => `**${t.term}** — ${t.definition}`).join("\n\n")}`,
+    };
+  }
+
+  // Burgundy village hierarchy query
+  if (
+    q.includes("burgundy village") ||
+    q.includes("burgundy hierarchy") ||
+    q.includes("village style") ||
+    q.includes("chablis vs") ||
+    (q.includes("white burgundy") &&
+      (q.includes("village") ||
+        q.includes("region") ||
+        q.includes("hierarchy") ||
+        q.includes("difference")))
+  ) {
+    return {
+      text: `**The White Burgundy Villages — North to South:**\n\n${BURGUNDY_VILLAGES.map((v) => `**${v.name}** — ${v.description}`).join("\n\n")}`,
+    };
+  }
+
+  // Village recommendation by guest preference
+  if (
+    q.includes("white burgundy") &&
+    (q.includes("crisp") ||
+      q.includes("mineral") ||
+      q.includes("richest") ||
+      q.includes("most opulent") ||
+      q.includes("most prestigious") ||
+      q.includes("value") ||
+      q.includes("recommend") ||
+      q.includes("suggest"))
+  ) {
+    const positioningMatch = VILLAGE_POSITIONING.find((p) =>
+      q.includes(p.preference.toLowerCase()),
+    );
+    if (positioningMatch) {
+      return {
+        text: `For a guest who wants **${positioningMatch.preference}**, we recommend: **${positioningMatch.recommendation}**.\n\n${VILLAGE_POSITIONING.map((p) => `*${p.preference}* → ${p.recommendation}`).join("\n")}`,
+      };
+    }
+    return {
+      text: `**Positioning the White Burgundy Villages for a Guest:**\n\n${VILLAGE_POSITIONING.map((p) => `*${p.preference}* → ${p.recommendation}`).join("\n")}\n\nAll five wines are presented in bottle format as elevated food pairings.`,
+    };
+  }
+
+  // Individual White Burgundy wine lookup
+  const specificWhiteBurgundy = findWhiteBurgundy(q);
+  if (specificWhiteBurgundy) {
+    const pronNote = specificWhiteBurgundy.pronunciation
+      ? `\n\n*Pronunciation:* ${specificWhiteBurgundy.pronunciation}`
+      : "";
+    return {
+      text: `**${specificWhiteBurgundy.name}**${pronNote}\n\n*Appellation:* ${specificWhiteBurgundy.appellation}\n*Grape:* ${specificWhiteBurgundy.grape}\n*Glassware:* ${specificWhiteBurgundy.glassware} glass\n*Format:* Bottle only — elevated food pairing\n\n*Tasting Notes:* ${specificWhiteBurgundy.tastingNotes}\n\n*Vintage Character:* ${specificWhiteBurgundy.vintageCharacter}\n\n*Terroir:* ${specificWhiteBurgundy.terroir}\n\n*Elevated Food Pairing at AMA:* ${specificWhiteBurgundy.foodPairing}\n\n*"${specificWhiteBurgundy.guestOneLiner}"*`,
+    };
+  }
+
+  // White Burgundy program overview
+  if (
+    q.includes("white burgundy list") ||
+    q.includes("white burgundy program") ||
+    q.includes("burgundy bottles") ||
+    q.includes("burgundy bottle program") ||
+    (q.includes("white burgundy") &&
+      (q.includes("all") ||
+        q.includes("selection") ||
+        q.includes("list") ||
+        q.includes("program")))
+  ) {
+    return {
+      text: `Our White Burgundy bottle program features five exceptional selections:\n\n${WHITE_BURGUNDY_WINES.map((w) => `**${w.name}** — ${w.appellation}\n*"${w.guestOneLiner}"*`).join("\n\n")}\n\nAll are presented in bottle format as elevated food pairings — from lean, mineral Chablis to opulent Meursault.`,
     };
   }
 

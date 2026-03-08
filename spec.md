@@ -1,36 +1,66 @@
-# Gooni — Umi AMA Sushi Staff Training Platform
+# Gooni — Umi AMA Sushi Staff Education
 
 ## Current State
-The app is a full-stack staff training platform for AMA Sushi at Rosewood Miramar Beach. It features:
-- **Study Mode**: Menu sections (Starters, Zensai, Mains, Specialty Rolls, Classic Rolls, Dessert) and a Wine Program tab with 13 wines
-- **Quiz Mode**: Questions across menu, Forbes service standards, and wine categories
-- **Chat Mode**: Umi chat engine with knowledge of menu items, Forbes standards, wine data, and glossary
-- **Glossary Tab**: 30 Japanese culinary terms
+The app is a full-stack React + Motoko staff education tool called Umi. It has four tabs:
+- **Study** — browsable menu sections, Wine Program section (WineSection.tsx), Sake Program section (SakeSection.tsx)
+- **Quiz** — interactive quiz with category filtering (menu, forbes, wine, sake)
+- **Chat** — freeform Q&A powered by chatEngine.ts
+- **Glossary** — searchable Japanese culinary terms
 
-The sake program is referenced only as beverage pairings inside menu items (menuData.ts). There is no dedicated sake data file, no Sake tab in Study Mode, no sake-specific quiz questions, and the chat engine has only a brief generic sake fallback response.
+Data files: menuData.ts, wineData.ts, sakeData.ts, quizData.ts, glossaryData.ts, chatEngine.ts.
+
+The Wine Program tab covers 13 by-the-glass wines. There is no White Burgundy bottle program section.
 
 ## Requested Changes (Diff)
 
 ### Add
-- `src/frontend/src/data/sakeData.ts` — full sake program data: 6 sakes with classification, region, rice variety, milling %, SMV, ABV, acidity, aroma, palate, winemaking notes, brewery history, guest one-liner, food pairing, glassware, and pricing
-- Sake fundamentals data: 8 classification definitions (Honjozo through Nigori), SMV explanation, rice milling % explanation, and the "Sake Ladder" (6-step progression)
-- `src/frontend/src/components/SakeSection.tsx` — Study Mode panel for the sake program, styled to match WineSection
-- 12 sake quiz questions in `quizData.ts` (new `"sake"` category), covering classifications, SMV, rice varietals, brewery facts, and guest scenario questions
-- Robust sake-specific response handlers in `chatEngine.ts` covering: sake overview, individual sake lookups, classification questions, SMV, rice milling, sake ladder, food pairing, brewery history
+- **`src/data/whiteBurgundyData.ts`** — Data file with:
+  - 5 White Burgundy bottle-format wines (Tribut Chablis, Hubert Lamy Saint-Aubin, Bachelet-Monnot Chassagne, Ramonet Puligny, Chavy-Chouet Meursault)
+  - Each wine: id, name, appellation, village, pronunciation (if any), grape, bottlePrice, glassware, tastingNotes, vintageCharacter, terroir, winemaking, estate, foodPairing, guestOneLiner
+  - Burgundy hierarchy context (5 villages with descriptions)
+  - Key terms: 1er Cru, Climat, Kimmeridgian limestone, Lutte raisonnée, Bâtonnage
+  - Village positioning guide (guest preference → wine recommendation)
+  - `findWhiteBurgundy(query)` helper function
+
+- **`src/components/WhiteBurgundySection.tsx`** — New component modeled after WineSection.tsx/SakeSection.tsx, displaying:
+  - Intro header explaining bottle-format elevated pairings
+  - Burgundy hierarchy context panel (collapsible or always-visible reference card showing villages north→south)
+  - Key terms reference panel (collapsible)
+  - Village positioning guide (quick reference table: guest preference → recommendation)
+  - One card per wine with: name, appellation badge, pronunciation, bottle price, glassware, tasting notes, vintage character, terroir, winemaking, estate (expandable section), food pairing at AMA, guest one-liner
+
+- **10 new quiz questions** (category: `"white-burgundy"`) added to quizData.ts covering:
+  - Beauroy pronunciation (Bo-rooy)
+  - Kimmeridgian limestone definition
+  - Casse-tête meaning
+  - Hubert Lamy vine density
+  - Ramonet's historical story
+  - 1er Cru definition
+  - Lutte raisonnée
+  - Richest village / best pour for opulence
+  - Saint-Aubin value story
+  - 2021 vintage truth/false
+
+- **Chat engine handlers** in chatEngine.ts for:
+  - White Burgundy general queries (village hierarchy, positioning)
+  - Individual wine lookups via findWhiteBurgundy()
+  - Burgundy key terms (1er Cru, Kimmeridgian, Bâtonnage, Lutte raisonnée, Climat)
+  - Village-based recommendations ("richest", "crisp and mineral", "most prestigious", "value")
 
 ### Modify
-- `src/frontend/src/components/StudyMode.tsx` — add a "Sake Program" tab alongside the existing Wine Program tab; render `<SakeSection />` when active
-- `src/frontend/src/data/chatEngine.ts` — replace the generic sake fallback with rich sake-specific handlers using `findSake()` and sake fundamentals knowledge
-- `src/frontend/src/components/QuizMode.tsx` — include `"sake"` as a selectable quiz category option (alongside menu, forbes, wine)
-- `src/frontend/src/data/quizData.ts` — add 12 sake questions with category `"sake"`
+- **StudyMode.tsx** — Add a "White Burgundy" tab button (with wine bottle icon) alongside the Wine Program and Sake Program tabs. When active, render `<WhiteBurgundySection />`. Update header text/description for this new section.
+- **quizData.ts** — Add `"white-burgundy"` to the QuizQuestion category union type and add 10 new questions.
+- **QuizMode.tsx** — Add "White Burgundy" as a selectable quiz category option.
+- **chatEngine.ts** — Import whiteBurgundyData and add response handlers.
 
 ### Remove
-- Nothing removed
+- Nothing removed.
 
 ## Implementation Plan
-1. Create `sakeData.ts` with full type definitions, 6 sake entries, fundamentals, and `findSake()` utility
-2. Add 12 sake quiz questions to `quizData.ts` with category `"sake"`
-3. Update `chatEngine.ts` to import sakeData and handle: individual sake lookups, classification questions (junmai, daiginjo, nigori, honjozo, SMV, milling, etc.), sake ladder, sake program overview
-4. Create `SakeSection.tsx` component mirroring WineSection's layout with sake-specific fields (SMV badge, milling %, rice varietal, sake ladder)
-5. Update `StudyMode.tsx` to add a Sake Program tab and render `<SakeSection />`
-6. Update `QuizMode.tsx` to include sake as a quiz category option
+1. Create `src/data/whiteBurgundyData.ts` with all 5 wines, context data, helper function
+2. Add 10 quiz questions to `src/data/quizData.ts` with category `"white-burgundy"` (update union type)
+3. Create `src/components/WhiteBurgundySection.tsx` with full card layout
+4. Update `StudyMode.tsx` to add White Burgundy tab and render the new section
+5. Update `QuizMode.tsx` to include white-burgundy category filter
+6. Update `chatEngine.ts` to import and handle White Burgundy queries
+7. Validate (typecheck, lint, build)

@@ -1,7 +1,7 @@
 export type QuizQuestion = {
   id: number;
   type: "multiple-choice" | "true-false" | "scenario";
-  category: "menu" | "forbes" | "wine" | "sake";
+  category: "menu" | "forbes" | "wine" | "sake" | "white-burgundy";
   question: string;
   options: string[];
   correctIndex: number;
@@ -703,5 +703,157 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     correctIndex: 1,
     explanation:
       "False. Shiraiwa K.K. — the company behind IWA 5 — was founded only in 2019. Despite being one of the newest breweries on our list, it immediately became one of the most talked-about luxury sake projects in the world, thanks to its founder Richard Geoffroy, the former cellar master of Dom Pérignon. Compare this to Ban Ryu's Fuji Brewery (founded 1778) or Masumi's Miyasaka (founded 1662).",
+  },
+
+  // ── WHITE BURGUNDY ────────────────────────────────────────────────────────
+  {
+    id: 50,
+    type: "multiple-choice",
+    category: "white-burgundy",
+    question:
+      "What is the correct pronunciation of the Chablis Premier Cru vineyard Beauroy?",
+    options: ["Boh-WA", "Bay-ROY", "Bo-rooy", "BOW-roo-ee"],
+    correctIndex: 2,
+    explanation:
+      "Beauroy is pronounced Bo-rooy — this is the Premier Cru climat of the Laurent Tribut Chablis on our list. Knowing the pronunciation gives guests confidence that you understand the wine and its origins.",
+  },
+  {
+    id: 51,
+    type: "multiple-choice",
+    category: "white-burgundy",
+    question:
+      "What is Kimmeridgian limestone, and which wine on our White Burgundy list comes from it?",
+    options: [
+      "A volcanic rock unique to Burgundy — the Ramonet Puligny",
+      "Ancient seabed limestone found in Chablis — the Tribut Chablis 1er Cru Beauroy",
+      "A type of clay found in Meursault — the Chavy-Chouet",
+      "Chalky limestone found throughout Burgundy — all five wines",
+    ],
+    correctIndex: 1,
+    explanation:
+      "Kimmeridgian limestone is ancient seabed limestone — it gives Chablis its signature razor-sharp mineral tension and chalky character. The Laurent Tribut Chablis 1er Cru Beauroy comes specifically from Kimmeridgian limestone foothills.",
+  },
+  {
+    id: 52,
+    type: "multiple-choice",
+    category: "white-burgundy",
+    question:
+      "What does 'casse-tête' mean in French, and why is it the name of the Meursault on our list?",
+    options: [
+      "It means 'stone head' — referring to the hardness of the Meursault producer's style",
+      "It means 'conundrum' or 'puzzle' — referring to the hardness of the pebbly limestone soil that challenged those who first planted it",
+      "It means 'broken ridge' — the name of the slope where the vines are planted",
+      "It means 'warm head' — referencing the unusually warm 2019 vintage",
+    ],
+    correctIndex: 1,
+    explanation:
+      "'Casse-tête' means conundrum or puzzle in French. The name of the Chavy-Chouet Meursault 'Les Casse-Têtes' refers to the hardness of the pebbly limestone soil — it was a challenge (a puzzle) for ancestors who first planted vines there.",
+  },
+  {
+    id: 53,
+    type: "multiple-choice",
+    category: "white-burgundy",
+    question:
+      "Hubert Lamy plants their vines at unusually high density. Why, and what is the effect on the wine?",
+    options: [
+      "Higher density is required by Burgundian law for Premier Cru designations",
+      "High density forces roots deep into the limestone, naturally limits yields, and amplifies mineral tension in the wine",
+      "Dense planting creates a warmer microclimate, producing richer, more opulent wines",
+      "High density is purely traditional — there is no measurable impact on the wine",
+    ],
+    correctIndex: 1,
+    explanation:
+      "Hubert Lamy plants at extraordinary density — far above Burgundian norms. This disciplines the vine, forces roots to compete and plunge deep into the limestone for nutrients, naturally limits yields, and produces a wine of exceptional precision and mineral tension.",
+  },
+  {
+    id: 54,
+    type: "scenario",
+    category: "white-burgundy",
+    question:
+      "A guest is considering the Puligny-Montrachet. What story do you tell about Ramonet?",
+    options: [
+      "'Ramonet is a very old Burgundy estate — one of the biggest in the region.'",
+      "'Pierre Ramonet purchased his first vineyard plot in 1934 — and it became one of the first estate-bottled white Burgundies imported into America after Prohibition. The domaine gained legendary collector status.'",
+      "'The Ramonet family has farmed in Puligny since the 17th century and holds several Grand Cru plots.'",
+      "'Ramonet is best known for their red Burgundy — the Puligny is a newer addition to their portfolio.'",
+    ],
+    correctIndex: 1,
+    explanation:
+      "The Ramonet story is compelling and memorable: Pierre Ramonet purchased his first plot at Ruchottes-Chassagne in 1934. The estate's wines became one of the first estate-bottled white Burgundies ever imported to the US after Prohibition, gaining legendary collector status that endures today.",
+  },
+  {
+    id: 55,
+    type: "multiple-choice",
+    category: "white-burgundy",
+    question:
+      "What does 1er Cru mean in Burgundy, and why does it matter for the wines on our list?",
+    options: [
+      "It means the wine is from the first vintage the estate ever produced",
+      "It is the highest classification in Burgundy, above Grand Cru",
+      "It is the second-highest classification — a specifically named vineyard plot of exceptional terroir, below Grand Cru",
+      "It means the wine is produced by the first generation of a family estate",
+    ],
+    correctIndex: 2,
+    explanation:
+      "Premier Cru (1er Cru) is the second-highest classification in Burgundy, below Grand Cru. It designates a specific, named vineyard plot of proven exceptional terroir. On our list, both the Tribut Chablis and the Hubert Lamy Saint-Aubin are Premier Cru wines.",
+  },
+  {
+    id: 56,
+    type: "multiple-choice",
+    category: "white-burgundy",
+    question:
+      "What is lutte raisonnée farming, as practiced by Bachelet-Monnot for their Chassagne-Montrachet?",
+    options: [
+      "Fully certified biodynamic farming using lunar calendar planting cycles",
+      "100% organic farming with annual certification by a governing body",
+      "Organic-leaning farming that avoids chemicals and pesticides without full organic certification — 'reasoned struggle'",
+      "Conventional farming with targeted pesticide use approved by the Burgundy appellation board",
+    ],
+    correctIndex: 2,
+    explanation:
+      "Lutte raisonnée means 'reasoned struggle' — it describes sustainable farming that avoids chemicals and pesticides, but stops short of full organic certification. Bachelet-Monnot practices lutte raisonnée across their six Chassagne parcels, reflecting their commitment to honest, land-respecting winemaking.",
+  },
+  {
+    id: 57,
+    type: "scenario",
+    category: "white-burgundy",
+    question:
+      "A guest wants the richest, most opulent style of white Burgundy on our list. What do you pour?",
+    options: [
+      "The Tribut Chablis 1er Cru — Chablis is the fullest-bodied Burgundy village",
+      "The Hubert Lamy Saint-Aubin — its Puligny-like profile is the richest on the list",
+      "The Chavy-Chouet Meursault 'Les Casse-Têtes' — Meursault is Burgundy's most opulent white wine village",
+      "The Bachelet-Monnot Chassagne-Montrachet — Chassagne is richer than Meursault",
+    ],
+    correctIndex: 2,
+    explanation:
+      "For richness and opulence, Meursault is the answer. It is Burgundy's most opulent white wine village — known for hazelnut, butter, and stone fruit. The Chavy-Chouet 'Les Casse-Têtes' is a beautiful example of that richness with seven generations of family heritage behind it.",
+  },
+  {
+    id: 58,
+    type: "multiple-choice",
+    category: "white-burgundy",
+    question:
+      "What makes the Hubert Lamy Saint-Aubin a particularly exciting value on our White Burgundy list?",
+    options: [
+      "It is the least expensive wine on the list and comes from a very obscure, low-profile appellation",
+      "Saint-Aubin is adjacent to Puligny-Montrachet; Lamy's wine is Puligny-like in profile — Premier Cru quality at a fraction of the Puligny price",
+      "Saint-Aubin is considered superior to Puligny-Montrachet but sells for less due to lower name recognition",
+      "The wine is priced below market value because Hubert Lamy is a young estate with no track record",
+    ],
+    correctIndex: 1,
+    explanation:
+      "Saint-Aubin sits adjacent to Puligny-Montrachet on the Côte de Beaune. Hubert Lamy's 'Les Frionnes' is described as 'Puligny-like in profile' — combining the tension, limestone minerality, and incisive close of Puligny — but at a Saint-Aubin price. This is the value story to tell guests who want Puligny character on a more accessible budget.",
+  },
+  {
+    id: 59,
+    type: "true-false",
+    category: "white-burgundy",
+    question:
+      "True or False: The 2021 Burgundy vintage was abundant and rich, with excellent yields throughout the region.",
+    options: ["True", "False"],
+    correctIndex: 1,
+    explanation:
+      "False. The 2021 Burgundy vintage was defined by severe spring frosts that dramatically reduced yields — it was a very challenging growing year. The wines from producers who succeeded (like Hubert Lamy and Ramonet) are lean, high in acidity, and strongly mineral-driven — precision over richness. It is not a vintage of abundance.",
   },
 ];

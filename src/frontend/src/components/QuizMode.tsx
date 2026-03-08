@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { QUIZ_QUESTIONS, type QuizQuestion } from "@/data/quizData";
 import {
   Award,
+  BookMarked,
   BookOpen,
   CheckCircle2,
   ChevronRight,
@@ -18,7 +19,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { useCallback, useState } from "react";
 
 type QuizState = "idle" | "answering" | "feedback" | "complete";
-type QuizFocus = "menu" | "forbes" | "wine" | "sake" | "mix";
+type QuizFocus = "menu" | "forbes" | "wine" | "sake" | "white-burgundy" | "mix";
 
 function shuffle<T>(arr: T[]): T[] {
   const a = [...arr];
@@ -54,6 +55,11 @@ function buildQuestionPool(focus: QuizFocus): QuizQuestion[] {
       10,
     );
   }
+  if (focus === "white-burgundy") {
+    return shuffle(
+      QUIZ_QUESTIONS.filter((q) => q.category === "white-burgundy"),
+    ).slice(0, 10);
+  }
   return shuffle(QUIZ_QUESTIONS).slice(0, 10);
 }
 
@@ -86,6 +92,12 @@ const FOCUS_OPTIONS: {
     label: "Sake Knowledge",
     sublabel: "Classifications, SMV & sakes",
     icon: Droplets,
+  },
+  {
+    id: "white-burgundy",
+    label: "White Burgundy",
+    sublabel: "Burgundy villages & terroir",
+    icon: BookMarked,
   },
   {
     id: "mix",
@@ -221,7 +233,7 @@ export function QuizMode() {
                 What would you like to focus on?
               </p>
               <div
-                className="grid grid-cols-2 sm:grid-cols-4 gap-3"
+                className="grid grid-cols-2 sm:grid-cols-3 gap-3"
                 aria-label="Quiz focus"
               >
                 {FOCUS_OPTIONS.map((opt) => {
@@ -329,7 +341,9 @@ export function QuizMode() {
                         ? "border-highlight/40 text-highlight bg-highlight/10"
                         : current.category === "sake"
                           ? "border-rose/40 text-rose bg-rose/10"
-                          : "border-border text-muted-foreground"
+                          : current.category === "white-burgundy"
+                            ? "border-gold/50 text-gold bg-gold/12"
+                            : "border-border text-muted-foreground"
                   }`}
                 >
                   {current.category === "forbes"
@@ -338,7 +352,9 @@ export function QuizMode() {
                       ? "Wine Program"
                       : current.category === "sake"
                         ? "Sake Knowledge"
-                        : "Menu Knowledge"}
+                        : current.category === "white-burgundy"
+                          ? "White Burgundy"
+                          : "Menu Knowledge"}
                 </Badge>
               </div>
 

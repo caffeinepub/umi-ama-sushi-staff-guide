@@ -1,8 +1,16 @@
 import { SakeSection } from "@/components/SakeSection";
+import { WhiteBurgundySection } from "@/components/WhiteBurgundySection";
 import { WineSection } from "@/components/WineSection";
 import { Badge } from "@/components/ui/badge";
 import { MENU_SECTIONS } from "@/data/menuData";
-import { AlertCircle, ChefHat, Droplets, Info, Wine } from "lucide-react";
+import {
+  AlertCircle,
+  BookMarked,
+  ChefHat,
+  Droplets,
+  Info,
+  Wine,
+} from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
 
@@ -13,8 +21,9 @@ export function StudyMode() {
 
   const isWineSection = activeSection === "wine";
   const isSakeSection = activeSection === "sake";
+  const isWhiteBurgundySection = activeSection === "white-burgundy";
   const section =
-    !isWineSection && !isSakeSection
+    !isWineSection && !isSakeSection && !isWhiteBurgundySection
       ? (MENU_SECTIONS.find((s) => s.id === activeSection) ?? MENU_SECTIONS[0])
       : null;
 
@@ -32,6 +41,8 @@ export function StudyMode() {
             <Wine className="w-5 h-5 text-gold" />
           ) : isSakeSection ? (
             <Droplets className="w-5 h-5 text-gold" />
+          ) : isWhiteBurgundySection ? (
+            <BookMarked className="w-5 h-5 text-gold" />
           ) : (
             <ChefHat className="w-5 h-5 text-gold" />
           )}
@@ -40,7 +51,9 @@ export function StudyMode() {
               ? "Wine Program"
               : isSakeSection
                 ? "Sake Program"
-                : "Menu Study"}
+                : isWhiteBurgundySection
+                  ? "White Burgundy"
+                  : "Menu Study"}
           </span>
         </div>
         <h1 className="font-serif text-3xl md:text-4xl text-foreground mb-3">
@@ -48,14 +61,18 @@ export function StudyMode() {
             ? "Wine by the Glass"
             : isSakeSection
               ? "Sake by the Glass"
-              : "Study the Menu"}
+              : isWhiteBurgundySection
+                ? "White Burgundy Bottle Program"
+                : "Study the Menu"}
         </h1>
         <p className="font-sans text-muted-foreground text-base leading-relaxed max-w-xl">
           {isWineSection
             ? "Our complete wine by the glass program — 13 selections spanning Champagne, white, rosé, and red wines. Tasting notes, winemaking details, pricing, glassware, and guest-facing descriptions."
             : isSakeSection
               ? "Our curated sake by the glass program — 6 selections from Honjozo to Junmai Daiginjo. Classifications, rice varietals, SMV, tasting notes, brewery stories, and guest-facing descriptions."
-              : "Explore each section of the AMA Sushi menu — ingredients, dietary information, beverage pairings, and the service notes that elevate every dish."}
+              : isWhiteBurgundySection
+                ? "Five exceptional White Burgundy bottle pairings — from lean Chablis to opulent Meursault. The Burgundy hierarchy, key terroir terms, tasting notes, estate stories, and elevated food pairings."
+                : "Explore each section of the AMA Sushi menu — ingredients, dietary information, beverage pairings, and the service notes that elevate every dish."}
         </p>
       </motion.div>
 
@@ -110,6 +127,20 @@ export function StudyMode() {
             <Droplets className="w-3.5 h-3.5" />
             Sake Program
           </button>
+          {/* White Burgundy tab */}
+          <button
+            type="button"
+            data-ocid="study.white-burgundy.tab"
+            onClick={() => setActiveSection("white-burgundy")}
+            className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-sans font-medium transition-all duration-200 whitespace-nowrap ${
+              activeSection === "white-burgundy"
+                ? "bg-primary text-primary-foreground shadow-xs"
+                : "bg-secondary text-secondary-foreground hover:bg-accent hover:text-accent-foreground"
+            }`}
+          >
+            <BookMarked className="w-3.5 h-3.5" />
+            White Burgundy
+          </button>
         </div>
       </motion.div>
 
@@ -126,6 +157,8 @@ export function StudyMode() {
             <WineSection />
           ) : isSakeSection ? (
             <SakeSection />
+          ) : isWhiteBurgundySection ? (
+            <WhiteBurgundySection />
           ) : section ? (
             <>
               {/* Section heading */}
