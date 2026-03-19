@@ -1,3 +1,4 @@
+import { CocktailSection } from "@/components/CocktailSection";
 import { SakeSection } from "@/components/SakeSection";
 import { WhiteBurgundySection } from "@/components/WhiteBurgundySection";
 import { WineSection } from "@/components/WineSection";
@@ -8,6 +9,7 @@ import {
   BookMarked,
   ChefHat,
   Droplets,
+  GlassWater,
   Info,
   Wine,
 } from "lucide-react";
@@ -22,8 +24,12 @@ export function StudyMode() {
   const isWineSection = activeSection === "wine";
   const isSakeSection = activeSection === "sake";
   const isWhiteBurgundySection = activeSection === "white-burgundy";
+  const isCocktailSection = activeSection === "cocktail";
   const section =
-    !isWineSection && !isSakeSection && !isWhiteBurgundySection
+    !isWineSection &&
+    !isSakeSection &&
+    !isWhiteBurgundySection &&
+    !isCocktailSection
       ? (MENU_SECTIONS.find((s) => s.id === activeSection) ?? MENU_SECTIONS[0])
       : null;
 
@@ -43,6 +49,8 @@ export function StudyMode() {
             <Droplets className="w-5 h-5 text-gold" />
           ) : isWhiteBurgundySection ? (
             <BookMarked className="w-5 h-5 text-gold" />
+          ) : isCocktailSection ? (
+            <GlassWater className="w-5 h-5 text-gold" />
           ) : (
             <ChefHat className="w-5 h-5 text-gold" />
           )}
@@ -53,7 +61,9 @@ export function StudyMode() {
                 ? "Sake Program"
                 : isWhiteBurgundySection
                   ? "White Burgundy"
-                  : "Menu Study"}
+                  : isCocktailSection
+                    ? "Cocktail Program"
+                    : "Menu Study"}
           </span>
         </div>
         <h1 className="font-serif text-3xl md:text-4xl text-foreground mb-3">
@@ -63,7 +73,9 @@ export function StudyMode() {
               ? "Sake by the Glass"
               : isWhiteBurgundySection
                 ? "White Burgundy Bottle Program"
-                : "Study the Menu"}
+                : isCocktailSection
+                  ? "AMA Signature Cocktail Program"
+                  : "Study the Menu"}
         </h1>
         <p className="font-sans text-muted-foreground text-base leading-relaxed max-w-xl">
           {isWineSection
@@ -72,7 +84,9 @@ export function StudyMode() {
               ? "Our curated sake by the glass program — 6 selections from Honjozo to Junmai Daiginjo. Classifications, rice varietals, SMV, tasting notes, brewery stories, and guest-facing descriptions."
               : isWhiteBurgundySection
                 ? "Five exceptional White Burgundy bottle pairings — from lean Chablis to opulent Meursault. The Burgundy hierarchy, key terroir terms, tasting notes, estate stories, and elevated food pairings."
-                : "Explore each section of the AMA Sushi menu — ingredients, dietary information, beverage pairings, and the service notes that elevate every dish."}
+                : isCocktailSection
+                  ? "The complete AMA cocktail program — 8 signature cocktails and 3 dedicated mocktails. Signature spirits, service sequences, guest one-liners, dietary flags, and tableside service moments."
+                  : "Explore each section of the AMA Sushi menu — ingredients, dietary information, beverage pairings, and the service notes that elevate every dish."}
         </p>
       </motion.div>
 
@@ -141,6 +155,20 @@ export function StudyMode() {
             <BookMarked className="w-3.5 h-3.5" />
             White Burgundy
           </button>
+          {/* Cocktail tab */}
+          <button
+            type="button"
+            data-ocid="study.cocktail.tab"
+            onClick={() => setActiveSection("cocktail")}
+            className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-sans font-medium transition-all duration-200 whitespace-nowrap ${
+              activeSection === "cocktail"
+                ? "bg-primary text-primary-foreground shadow-xs"
+                : "bg-secondary text-secondary-foreground hover:bg-accent hover:text-accent-foreground"
+            }`}
+          >
+            <GlassWater className="w-3.5 h-3.5" />
+            Cocktail Program
+          </button>
         </div>
       </motion.div>
 
@@ -159,6 +187,8 @@ export function StudyMode() {
             <SakeSection />
           ) : isWhiteBurgundySection ? (
             <WhiteBurgundySection />
+          ) : isCocktailSection ? (
+            <CocktailSection />
           ) : section ? (
             <>
               {/* Section heading */}

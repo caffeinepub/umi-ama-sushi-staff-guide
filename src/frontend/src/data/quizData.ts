@@ -1,7 +1,7 @@
 export type QuizQuestion = {
   id: number;
   type: "multiple-choice" | "true-false" | "scenario";
-  category: "menu" | "forbes" | "wine" | "sake" | "white-burgundy";
+  category: "menu" | "forbes" | "wine" | "sake" | "white-burgundy" | "cocktail";
   question: string;
   options: string[];
   correctIndex: number;
@@ -855,5 +855,157 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     correctIndex: 1,
     explanation:
       "False. The 2021 Burgundy vintage was defined by severe spring frosts that dramatically reduced yields — it was a very challenging growing year. The wines from producers who succeeded (like Hubert Lamy and Ramonet) are lean, high in acidity, and strongly mineral-driven — precision over richness. It is not a vintage of abundance.",
+  },
+  {
+    id: 60,
+    type: "multiple-choice",
+    category: "cocktail",
+    question:
+      "What does Komorebi mean, and what makes it designed for non-whisky drinkers?",
+    options: [
+      "Cherry blossom petals — it uses light Haku vodka with pineapple",
+      "Sunlight filtering through leaves — it uses light Nikka Days whisky with tropical pineapple mango cordial, making it approachable and fruit-forward",
+      "Scent of the earth — made with shiitake-infused whisky and umami notes",
+      "Wind and flower — a gin-based cocktail with Roku and lychee",
+    ],
+    correctIndex: 1,
+    explanation:
+      "Komorebi means sunlight filtering through leaves. It was specifically designed for non-whisky drinkers, using Nikka Days — a light, blended Japanese whisky — with a pineapple mango cordial. Approachable, fruit-forward, and refreshing.",
+  },
+  {
+    id: 61,
+    type: "multiple-choice",
+    category: "cocktail",
+    question:
+      "What is fat-washing, and which AMA cocktail uses this technique?",
+    options: [
+      "A filtration technique that removes impurities — used in the Dashi martini",
+      "A technique where fat is blended with a spirit then frozen and removed, leaving its flavor behind — used in Kohaku Yume with Kikori whisky",
+      "A method of aging spirits in butter-washed barrels — used in the Daichi No Kaori",
+      "A Japanese distillation technique — used in all whisk(e)y cocktails on the menu",
+    ],
+    correctIndex: 1,
+    explanation:
+      "Fat-washing is a bartending technique where butter or fat is blended with a spirit, then frozen — the fat solidifies and is removed, leaving its flavor behind in the liquid. Kohaku Yume uses fat-washed Kikori rice whisky, giving the old fashioned its characteristic buttery richness.",
+  },
+  {
+    id: 62,
+    type: "scenario",
+    category: "cocktail",
+    question:
+      "A guest says they don't drink alcohol. What are their three options and how do you briefly describe them?",
+    options: [
+      "Fūryū (dragon fruit & ginger), Yōka (mango pineapple soda), Hakuro (yuzu & shiso with furikake) — all crafted with the same care as our cocktail menu",
+      "Dashi (umami martini), Henka (warm milk punch), Odaya (rum sour) — all available as mocktail versions upon request",
+      "We only have still or sparkling water for non-drinkers",
+      "Komorebi and Ryū No Shizuku are our lowest-alcohol options and suitable for guests who don't drink",
+    ],
+    correctIndex: 0,
+    explanation:
+      "The three dedicated mocktails are Fūryū (dragon fruit, ginger, and lime), Yōka (mango, pineapple, lemon, and soda), and Hakuro (yuzu and shiso over pebble ice, topped with furikake). All are independently crafted — never position them as lesser options.",
+  },
+  {
+    id: 63,
+    type: "multiple-choice",
+    category: "cocktail",
+    question:
+      "What is the service sequence for the Dashi martini, and why does it matter?",
+    options: [
+      "Shake and pour directly into the martini glass; the green onion oil is added in the kitchen before service",
+      "Stir, strain into a sidecar, present at the table, pour into the martini glass in front of the guest, add 3–5 drops of green onion oil tableside — it is a deliberate service moment",
+      "Build in the glass at the bar and present with the sidecar as a garnish holder",
+      "Serve at room temperature without ice — the miso vermouth should not be chilled",
+    ],
+    correctIndex: 1,
+    explanation:
+      "The Dashi is a tableside service moment: stir, strain into the sidecar, present at the table with the martini glass, pour in front of the guest, then add 3–5 drops of green onion oil. The theater of this service elevates the experience and gives staff an opportunity to tell the story of this miso-inspired martini.",
+  },
+  {
+    id: 64,
+    type: "multiple-choice",
+    category: "cocktail",
+    question:
+      "Which cocktail is best enjoyed at the beginning or end of the meal, and why?",
+    options: [
+      "Kohaku Yume — the old fashioned format is a classic aperitif",
+      "Fūka — equal-parts cocktails are designed to open the palate",
+      "Henka — it is a warm milk punch served in a Japanese teapot, best shared and pairs beautifully with dessert",
+      "Dashi — its savory miso character makes it ideal as a palate cleanser",
+    ],
+    correctIndex: 2,
+    explanation:
+      "Henka is a warm milk punch served in a transparent glass teapot with mini glasses — a sharing experience. It is recommended at the beginning of the meal as an aperitif or at the end paired with dessert. Its warmth and light strawberry and green tea flavors make it perfect for both moments.",
+  },
+  {
+    id: 65,
+    type: "multiple-choice",
+    category: "cocktail",
+    question:
+      "What Prohibition-era classic inspired Fūka, and what makes our version different?",
+    options: [
+      "The Martini — we substitute lychee for olive brine and use Roku gin",
+      "The Manhattan — we substitute lychee for sweet vermouth",
+      "The Last Word — we substitute lychee liqueur for maraschino and use Roku, a Japanese gin with sakura and yuzu botanicals",
+      "The Bee's Knees — we substitute Green Chartreuse for honey syrup",
+    ],
+    correctIndex: 2,
+    explanation:
+      "The Last Word is a classic equal-parts cocktail from the 1920s Detroit Athletic Club — gin, green Chartreuse, maraschino, and lime. Fūka substitutes lychee liqueur for maraschino and uses Roku gin, featuring six Japanese botanicals. It is complex, balanced, and a wonderful story to share with guests.",
+  },
+  {
+    id: 66,
+    type: "multiple-choice",
+    category: "cocktail",
+    question:
+      "What does Daichi No Kaori mean, and what gives it its distinctive savory quality?",
+    options: [
+      "Amber Dream — fat-washed Kikori and cacao liqueur create a rich, sweet finish",
+      "Scent of the Earth — shiitake-infused Toki whisky and locally sourced date amaro create a umami, earthy, mushroom finish",
+      "Dragon's Drop — fresh dragon fruit juice and house-made ginger syrup give it a fruity savory character",
+      "Calm — Okinawan rum and shiso syrup create a savory herbal flavor",
+    ],
+    correctIndex: 1,
+    explanation:
+      "Daichi No Kaori means Scent of the Earth. Its savory, umami quality comes from Shitake Toki — a shiitake mushroom-infused Japanese whisky — combined with locally sourced date amaro. The result is an earthy highball with date and honey on entry and a distinctive mushroom finish.",
+  },
+  {
+    id: 67,
+    type: "true-false",
+    category: "cocktail",
+    question:
+      "Which cocktail on the AMA menu contains dairy and must be flagged for guests with dairy restrictions?",
+    options: [
+      "Henka — the warm milk punch contains dairy",
+      "Odaya — the furikake garnish contains dairy",
+    ],
+    correctIndex: 0,
+    explanation:
+      "Henka (Change/Transformation) is the warm milk punch — it is a dairy-containing cocktail and must be flagged for guests with dairy allergies or restrictions. No other cocktail on the list contains dairy.",
+  },
+  {
+    id: 68,
+    type: "true-false",
+    category: "cocktail",
+    question:
+      "True or False: The mocktails at AMA are simplified versions of the cocktails with fewer ingredients, designed as lower-priority alternatives.",
+    options: ["True", "False"],
+    correctIndex: 1,
+    explanation:
+      "False. The three mocktails — Fūryū, Yōka, and Hakuro — are independently crafted with their own flavor profiles and designed to be equally enjoyable. They are never positioned as lesser options. All three are made with the same attention and care as the alcoholic menu.",
+  },
+  {
+    id: 69,
+    type: "multiple-choice",
+    category: "cocktail",
+    question: "What is furikake, and which cocktails use it as a garnish?",
+    options: [
+      "A Japanese citrus salt — used on the rim of Komorebi and Ryū No Shizuku",
+      "A Japanese seasoning blend of sesame, seaweed, and salt — used on Odaya and Hakuro, where it slowly infuses into the drink",
+      "A shiso-based powder used on Dashi and Kohaku Yume",
+      "A dried mushroom dust used exclusively on Daichi No Kaori",
+    ],
+    correctIndex: 1,
+    explanation:
+      "Furikake is a Japanese seasoning blend of sesame seeds, seaweed, and salt — traditionally used as a rice topping. At AMA, it is used as a garnish on Odaya (the rum sour) and Hakuro (the yuzu shiso mocktail), where it slowly infuses into the drink over time, adding a subtle savory dimension.",
   },
 ];

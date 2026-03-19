@@ -19,7 +19,14 @@ import { AnimatePresence, motion } from "motion/react";
 import { useCallback, useState } from "react";
 
 type QuizState = "idle" | "answering" | "feedback" | "complete";
-type QuizFocus = "menu" | "forbes" | "wine" | "sake" | "white-burgundy" | "mix";
+type QuizFocus =
+  | "menu"
+  | "forbes"
+  | "wine"
+  | "sake"
+  | "white-burgundy"
+  | "cocktail"
+  | "mix";
 
 function shuffle<T>(arr: T[]): T[] {
   const a = [...arr];
@@ -60,6 +67,11 @@ function buildQuestionPool(focus: QuizFocus): QuizQuestion[] {
       QUIZ_QUESTIONS.filter((q) => q.category === "white-burgundy"),
     ).slice(0, 10);
   }
+  if (focus === "cocktail") {
+    return shuffle(
+      QUIZ_QUESTIONS.filter((q) => q.category === "cocktail"),
+    ).slice(0, 10);
+  }
   return shuffle(QUIZ_QUESTIONS).slice(0, 10);
 }
 
@@ -98,6 +110,12 @@ const FOCUS_OPTIONS: {
     label: "White Burgundy",
     sublabel: "Burgundy villages & terroir",
     icon: BookMarked,
+  },
+  {
+    id: "cocktail",
+    label: "Cocktail Program",
+    sublabel: "Cocktails, mocktails & spirits",
+    icon: GlassWater,
   },
   {
     id: "mix",
@@ -354,7 +372,9 @@ export function QuizMode() {
                         ? "Sake Knowledge"
                         : current.category === "white-burgundy"
                           ? "White Burgundy"
-                          : "Menu Knowledge"}
+                          : current.category === "cocktail"
+                            ? "Cocktail Program"
+                            : "Menu Knowledge"}
                 </Badge>
               </div>
 

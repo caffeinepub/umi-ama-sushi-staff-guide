@@ -1,3 +1,9 @@
+import {
+  COCKTAILS,
+  GUEST_GUIDANCE,
+  SIGNATURE_SPIRITS,
+  findCocktail,
+} from "./cocktailData";
 import { GLOSSARY_TERMS } from "./glossaryData";
 import { ALL_MENU_ITEMS, MENU_SECTIONS, type MenuItem } from "./menuData";
 import {
@@ -764,6 +770,169 @@ export function generateResponse(userMessage: string): ChatResponse {
   if (glossaryMatch) {
     return {
       text: `**${glossaryMatch.term}** — ${glossaryMatch.definition}${glossaryMatch.relatedDishes?.length ? ` Featured in: ${glossaryMatch.relatedDishes.join(", ")}.` : ""}`,
+    };
+  }
+
+  // Cocktail program overview
+  if (
+    q.includes("cocktail menu") ||
+    q.includes("cocktail list") ||
+    q.includes("cocktail program") ||
+    q.includes("signature cocktail")
+  ) {
+    const alcoholic = COCKTAILS.filter((c) => c.isAlcoholic);
+    const mocktails = COCKTAILS.filter((c) => !c.isAlcoholic);
+    return {
+      text: `The AMA cocktail program features **${alcoholic.length} signature cocktails** and **${mocktails.length} dedicated mocktails**, all deeply rooted in Japanese ingredients and culture.\n\n**Signature Cocktails:**\n${alcoholic.map((c) => `**${c.name}** *(${c.japaneseMeaning})* — ${c.style}`).join("\n")}\n\n**Mocktails:**\n${mocktails.map((c) => `**${c.name}** *(${c.japaneseMeaning})* — ${c.style}`).join("\n")}\n\nAsk me about any individual cocktail for full details, service sequences, and guest descriptions.`,
+    };
+  }
+
+  // Mocktail guidance
+  if (
+    q.includes("no alcohol") ||
+    q.includes("dont drink") ||
+    q.includes("don't drink") ||
+    q.includes("non-alcoholic") ||
+    q.includes("nonalcoholic") ||
+    q.includes("mocktail") ||
+    q.includes("non alcoholic")
+  ) {
+    const mocktails = COCKTAILS.filter((c) => !c.isAlcoholic);
+    return {
+      text: `We have three dedicated mocktails crafted with the same care and attention as the full cocktail menu. They are never an afterthought — they are independently designed to be equally enjoyable.\n\n${mocktails.map((c) => `**${c.name}** *(${c.japaneseMeaning})*\n*"${c.guestOneLiner}"*`).join("\n\n")}\n\nAll three are presented beautifully and make excellent choices for any guest who prefers not to drink alcohol.`,
+    };
+  }
+
+  // Fat-washing query
+  if (
+    q.includes("fat wash") ||
+    q.includes("fat-wash") ||
+    q.includes("fatwash")
+  ) {
+    return {
+      text: "**Fat-washing** is a bartending technique where butter or fat is blended with a spirit, then placed in the freezer. The fat solidifies and is removed — leaving behind its richness and flavor in the liquid without any of the fat itself.\n\nAt AMA, this technique is used in the **Kohaku Yume** (Amber Dream) — our old fashioned. Kikori rice whisky is fat-washed before use, giving the cocktail its characteristic **buttery richness**. It is a wonderful story to share with guests who notice and ask about the texture.",
+    };
+  }
+
+  // Henka / dairy flag
+  if (
+    (q.includes("henka") ||
+      q.includes("milk punch") ||
+      q.includes("teapot cocktail")) &&
+    !q.includes("describe")
+  ) {
+    const henka = findCocktail("henka");
+    if (henka) {
+      return {
+        text: `**${henka.name}** *(${henka.japaneseMeaning})* — ${henka.style}\n\n${henka.description}\n\n⚠️ **Dietary Note:** Henka contains **dairy** and must be flagged for any guest with a dairy allergy or intolerance.\n\n*Service:* ${henka.serviceNote}\n\n*"${henka.guestOneLiner}"*`,
+      };
+    }
+  }
+
+  // Dashi / allium flag
+  if (
+    q.includes("dashi cocktail") ||
+    q.includes("miso martini") ||
+    q.includes("umami martini") ||
+    (q.includes("dashi") &&
+      (q.includes("allium") ||
+        q.includes("green onion") ||
+        q.includes("service")))
+  ) {
+    const dashi = findCocktail("dashi cocktail");
+    if (dashi) {
+      return {
+        text: `**${dashi.name}** *(${dashi.japaneseMeaning})* — ${dashi.style}\n\n${dashi.description}\n\n⚠️ **Dietary Note:** Contains **allium** (green onion oil). Please flag for guests with allium sensitivities.\n\n*Service Sequence:* ${dashi.serviceSequence.join(" → ")}\n\n*Service Note:* ${dashi.serviceNote}\n\n*"${dashi.guestOneLiner}"*`,
+      };
+    }
+  }
+
+  // Tableside service queries
+  if (
+    q.includes("tableside") ||
+    q.includes("service moment") ||
+    q.includes("theatrical") ||
+    q.includes("dashi service") ||
+    q.includes("henka service")
+  ) {
+    const tableside = COCKTAILS.filter((c) => c.serviceNote);
+    return {
+      text: `AMA has two cocktails with dedicated tableside service moments:\n\n${tableside.map((c) => `**${c.name}** *(${c.japaneseMeaning})*\n${c.serviceNote}`).join("\n\n")}\n\nThese are not just drinks — they are gracious, theatrical moments that define the AMA experience. Approach them with presence and intention.`,
+    };
+  }
+
+  // Guest guidance — new to cocktails / recommend
+  if (
+    q.includes("new to cocktails") ||
+    q.includes("dont drink whisky") ||
+    q.includes("don't drink whisky") ||
+    q.includes("recommend cocktail") ||
+    q.includes("non-drinker") ||
+    q.includes("what cocktail")
+  ) {
+    return {
+      text: `${GUEST_GUIDANCE.map((g) => `**${g.title}**\n${g.body}`).join("\n\n")}`,
+    };
+  }
+
+  // Signature spirit queries
+  const spiritMatch = SIGNATURE_SPIRITS.find(
+    (s) =>
+      q.includes(s.name.toLowerCase()) ||
+      (s.name === "Shibui Grain Select" && q.includes("shibui")) ||
+      (s.name === "Nikka Days" &&
+        (q.includes("nikka days") ||
+          (q.includes("nikka") && q.includes("days")))) ||
+      (s.name === "Nikka Coffey Gin" &&
+        (q.includes("nikka coffey") || q.includes("coffey gin"))) ||
+      (s.name === "Shitake Toki" &&
+        (q.includes("shitake toki") ||
+          q.includes("shiitake whisky") ||
+          q.includes("toki"))) ||
+      (s.name === "Kikori" && q.includes("kikori")) ||
+      (s.name === "Roku Gin" && q.includes("roku")) ||
+      (s.name === "Haku Vodka" && q.includes("haku")) ||
+      (s.name === "Furikake" && q.includes("furikake")) ||
+      (s.name === "Shiso" && q.includes("shiso")) ||
+      (s.name === "Yuzu" &&
+        q.includes("yuzu") &&
+        !q.includes("ponzu") &&
+        !q.includes("salt") &&
+        !q.includes("miso")),
+  );
+  if (spiritMatch) {
+    const cocktailsUsing = COCKTAILS.filter(
+      (c) =>
+        c.ingredients.some((ing) =>
+          ing
+            .toLowerCase()
+            .includes(spiritMatch.name.toLowerCase().split(" ")[0]),
+        ) ||
+        c.garnish
+          .toLowerCase()
+          .includes(spiritMatch.name.toLowerCase().split(" ")[0]),
+    );
+    return {
+      text: `**${spiritMatch.name}** — ${spiritMatch.description}${cocktailsUsing.length > 0 ? `\n\n*Featured in:* ${cocktailsUsing.map((c) => c.name).join(", ")}` : ""}`,
+    };
+  }
+
+  // Individual cocktail lookup
+  const cocktailMatch = findCocktail(q);
+  if (cocktailMatch) {
+    const dietaryNote =
+      cocktailMatch.dietary.length > 0 &&
+      cocktailMatch.dietary[0] !== "No alcohol"
+        ? `\n\n⚠️ *Dietary:* ${cocktailMatch.dietary.join(", ")}`
+        : "";
+    const staffNoteText = cocktailMatch.staffNote
+      ? `\n\n*Staff Note:* ${cocktailMatch.staffNote}`
+      : "";
+    const serviceNoteText = cocktailMatch.serviceNote
+      ? `\n\n*Service Note:* ${cocktailMatch.serviceNote}`
+      : "";
+    return {
+      text: `**${cocktailMatch.name}** *(${cocktailMatch.japaneseMeaning})*\n${cocktailMatch.style} | ${cocktailMatch.glass}\n\n*Ingredients:* ${cocktailMatch.ingredients.join(", ")}\n*Garnish:* ${cocktailMatch.garnish}\n\n*Service:* ${cocktailMatch.serviceSequence.join(" → ")}${dietaryNote}${staffNoteText}${serviceNoteText}\n\n*"${cocktailMatch.guestOneLiner}"*`,
     };
   }
 

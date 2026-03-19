@@ -1,66 +1,30 @@
-# Gooni — Umi AMA Sushi Staff Education
+# Gooni — AMA Sushi Staff Education Platform
 
 ## Current State
-The app is a full-stack React + Motoko staff education tool called Umi. It has four tabs:
-- **Study** — browsable menu sections, Wine Program section (WineSection.tsx), Sake Program section (SakeSection.tsx)
-- **Quiz** — interactive quiz with category filtering (menu, forbes, wine, sake)
-- **Chat** — freeform Q&A powered by chatEngine.ts
-- **Glossary** — searchable Japanese culinary terms
-
-Data files: menuData.ts, wineData.ts, sakeData.ts, quizData.ts, glossaryData.ts, chatEngine.ts.
-
-The Wine Program tab covers 13 by-the-glass wines. There is no White Burgundy bottle program section.
+The app has Study, Quiz, Chat, and Glossary tabs. Study Mode has sections for menu items, Wine Program, Sake Program, and White Burgundy. Quiz Mode supports categories: menu, forbes, wine, sake, white-burgundy, and mix. Chat Mode uses chatEngine.ts with keyword matching across all programs. Data lives in separate files: menuData.ts, wineData.ts, sakeData.ts, whiteBurgundyData.ts, quizData.ts, chatEngine.ts.
 
 ## Requested Changes (Diff)
 
 ### Add
-- **`src/data/whiteBurgundyData.ts`** — Data file with:
-  - 5 White Burgundy bottle-format wines (Tribut Chablis, Hubert Lamy Saint-Aubin, Bachelet-Monnot Chassagne, Ramonet Puligny, Chavy-Chouet Meursault)
-  - Each wine: id, name, appellation, village, pronunciation (if any), grape, bottlePrice, glassware, tastingNotes, vintageCharacter, terroir, winemaking, estate, foodPairing, guestOneLiner
-  - Burgundy hierarchy context (5 villages with descriptions)
-  - Key terms: 1er Cru, Climat, Kimmeridgian limestone, Lutte raisonnée, Bâtonnage
-  - Village positioning guide (guest preference → wine recommendation)
-  - `findWhiteBurgundy(query)` helper function
-
-- **`src/components/WhiteBurgundySection.tsx`** — New component modeled after WineSection.tsx/SakeSection.tsx, displaying:
-  - Intro header explaining bottle-format elevated pairings
-  - Burgundy hierarchy context panel (collapsible or always-visible reference card showing villages north→south)
-  - Key terms reference panel (collapsible)
-  - Village positioning guide (quick reference table: guest preference → recommendation)
-  - One card per wine with: name, appellation badge, pronunciation, bottle price, glassware, tasting notes, vintage character, terroir, winemaking, estate (expandable section), food pairing at AMA, guest one-liner
-
-- **10 new quiz questions** (category: `"white-burgundy"`) added to quizData.ts covering:
-  - Beauroy pronunciation (Bo-rooy)
-  - Kimmeridgian limestone definition
-  - Casse-tête meaning
-  - Hubert Lamy vine density
-  - Ramonet's historical story
-  - 1er Cru definition
-  - Lutte raisonnée
-  - Richest village / best pour for opulence
-  - Saint-Aubin value story
-  - 2021 vintage truth/false
-
-- **Chat engine handlers** in chatEngine.ts for:
-  - White Burgundy general queries (village hierarchy, positioning)
-  - Individual wine lookups via findWhiteBurgundy()
-  - Burgundy key terms (1er Cru, Kimmeridgian, Bâtonnage, Lutte raisonnée, Climat)
-  - Village-based recommendations ("richest", "crisp and mineral", "most prestigious", "value")
+- `src/frontend/src/data/cocktailData.ts` — full cocktail program data: 8 signature cocktails + 3 mocktails, signature spirits glossary, quick reference table, and guest guidance rules
+- `src/frontend/src/components/CocktailSection.tsx` — Study Mode panel for the cocktail program with: spirit context cards, cocktail cards (name + Japanese meaning, style, glass, ingredients, garnish, service sequence, guest one-liner, dietary flags), mocktail section clearly marked, and a quick reference table
+- Add 10 cocktail quiz questions as a new `"cocktail"` category in quizData.ts
+- Add cocktail knowledge to chatEngine.ts (spirit lookups, cocktail detail queries, mocktail guidance, dietary flags like Henka/dairy)
+- Add `"cocktail"` focus option to QuizMode.tsx FOCUS_OPTIONS grid
+- Add Cocktail Program tab to StudyMode section tabs and render CocktailSection when active
 
 ### Modify
-- **StudyMode.tsx** — Add a "White Burgundy" tab button (with wine bottle icon) alongside the Wine Program and Sake Program tabs. When active, render `<WhiteBurgundySection />`. Update header text/description for this new section.
-- **quizData.ts** — Add `"white-burgundy"` to the QuizQuestion category union type and add 10 new questions.
-- **QuizMode.tsx** — Add "White Burgundy" as a selectable quiz category option.
-- **chatEngine.ts** — Import whiteBurgundyData and add response handlers.
+- `quizData.ts` — extend QuizQuestion category union to include `"cocktail"`
+- `QuizMode.tsx` — add cocktail focus option with appropriate icon (e.g. GlassWater or Martini)
+- `StudyMode.tsx` — add cocktail tab button and conditional rendering of CocktailSection
+- `chatEngine.ts` — import cocktailData and add cocktail-specific response branches
 
 ### Remove
-- Nothing removed.
+- Nothing removed
 
 ## Implementation Plan
-1. Create `src/data/whiteBurgundyData.ts` with all 5 wines, context data, helper function
-2. Add 10 quiz questions to `src/data/quizData.ts` with category `"white-burgundy"` (update union type)
-3. Create `src/components/WhiteBurgundySection.tsx` with full card layout
-4. Update `StudyMode.tsx` to add White Burgundy tab and render the new section
-5. Update `QuizMode.tsx` to include white-burgundy category filter
-6. Update `chatEngine.ts` to import and handle White Burgundy queries
-7. Validate (typecheck, lint, build)
+1. Create cocktailData.ts with all cocktail/mocktail data, spirits glossary, and guidance rules
+2. Create CocktailSection.tsx component with spirits context, cocktail cards, mocktail section, and quick reference
+3. Add 10 cocktail quiz questions (category: "cocktail") to quizData.ts
+4. Wire cocktailData into chatEngine.ts with response branches for spirit queries, cocktail detail, mocktail guidance, dietary (Henka dairy, Dashi allium), and fat-washing/service notes
+5. Add cocktail tab to StudyMode and cocktail focus option to QuizMode
