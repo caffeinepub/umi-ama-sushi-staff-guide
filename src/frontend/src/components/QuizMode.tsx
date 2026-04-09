@@ -10,9 +10,11 @@ import {
   Droplets,
   GlassWater,
   GraduationCap,
+  Package,
   RotateCcw,
   Shuffle,
   Trophy,
+  Wine,
   XCircle,
 } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
@@ -26,6 +28,8 @@ type QuizFocus =
   | "sake"
   | "white-burgundy"
   | "cocktail"
+  | "sake-bottle"
+  | "wine-bottle"
   | "mix";
 
 function shuffle<T>(arr: T[]): T[] {
@@ -72,6 +76,16 @@ function buildQuestionPool(focus: QuizFocus): QuizQuestion[] {
       QUIZ_QUESTIONS.filter((q) => q.category === "cocktail"),
     ).slice(0, 10);
   }
+  if (focus === "sake-bottle") {
+    return shuffle(
+      QUIZ_QUESTIONS.filter((q) => q.category === "sake-bottle"),
+    ).slice(0, 10);
+  }
+  if (focus === "wine-bottle") {
+    return shuffle(
+      QUIZ_QUESTIONS.filter((q) => q.category === "wine-bottle"),
+    ).slice(0, 10);
+  }
   return shuffle(QUIZ_QUESTIONS).slice(0, 10);
 }
 
@@ -104,6 +118,18 @@ const FOCUS_OPTIONS: {
     label: "Sake Knowledge",
     sublabel: "Classifications, SMV & sakes",
     icon: Droplets,
+  },
+  {
+    id: "sake-bottle",
+    label: "Sake: Bottles",
+    sublabel: "Bottle program, methods & rarities",
+    icon: Package,
+  },
+  {
+    id: "wine-bottle",
+    label: "Wine: Bottles",
+    sublabel: "Champagne, whites & rosés by bottle",
+    icon: Wine,
   },
   {
     id: "white-burgundy",
@@ -265,7 +291,9 @@ export function QuizMode() {
                       data-ocid={
                         opt.id === "sake"
                           ? "quiz.sake.tab"
-                          : `quiz.focus.${opt.id}.toggle`
+                          : opt.id === "sake-bottle"
+                            ? "quiz.sake-bottle.tab"
+                            : `quiz.focus.${opt.id}.toggle`
                       }
                       onClick={() => setQuizFocus(opt.id)}
                       className={`flex flex-col items-center gap-2 rounded-lg border p-4 text-center transition-all duration-200 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/50 ${
@@ -357,24 +385,30 @@ export function QuizMode() {
                       ? "border-gold/40 text-gold bg-gold/10"
                       : current.category === "wine"
                         ? "border-highlight/40 text-highlight bg-highlight/10"
-                        : current.category === "sake"
-                          ? "border-rose/40 text-rose bg-rose/10"
-                          : current.category === "white-burgundy"
-                            ? "border-gold/50 text-gold bg-gold/12"
-                            : "border-border text-muted-foreground"
+                        : current.category === "wine-bottle"
+                          ? "border-gold/40 text-gold bg-gold/8"
+                          : current.category === "sake"
+                            ? "border-rose/40 text-rose bg-rose/10"
+                            : current.category === "white-burgundy"
+                              ? "border-gold/50 text-gold bg-gold/12"
+                              : "border-border text-muted-foreground"
                   }`}
                 >
                   {current.category === "forbes"
                     ? "Forbes Standards"
                     : current.category === "wine"
                       ? "Wine Program"
-                      : current.category === "sake"
-                        ? "Sake Knowledge"
-                        : current.category === "white-burgundy"
-                          ? "White Burgundy"
-                          : current.category === "cocktail"
-                            ? "Cocktail Program"
-                            : "Menu Knowledge"}
+                      : current.category === "wine-bottle"
+                        ? "Wine: Bottles"
+                        : current.category === "sake"
+                          ? "Sake Knowledge"
+                          : current.category === "sake-bottle"
+                            ? "Sake: Bottles"
+                            : current.category === "white-burgundy"
+                              ? "White Burgundy"
+                              : current.category === "cocktail"
+                                ? "Cocktail Program"
+                                : "Menu Knowledge"}
                 </Badge>
               </div>
 

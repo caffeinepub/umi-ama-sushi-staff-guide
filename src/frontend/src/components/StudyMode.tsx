@@ -1,9 +1,12 @@
 import { CocktailSection } from "@/components/CocktailSection";
+import { SakeBottleSection } from "@/components/SakeBottleSection";
 import { SakeSection } from "@/components/SakeSection";
 import { WhiteBurgundySection } from "@/components/WhiteBurgundySection";
+import { WineBottleSection } from "@/components/WineBottleSection";
 import { WineSection } from "@/components/WineSection";
 import { Badge } from "@/components/ui/badge";
 import { MENU_SECTIONS } from "@/data/menuData";
+import type { StudySection } from "@/utils/searchEngine";
 import {
   AlertCircle,
   BookMarked,
@@ -11,25 +14,54 @@ import {
   Droplets,
   GlassWater,
   Info,
+  Package,
   Wine,
 } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-export function StudyMode() {
+interface StudyModeProps {
+  requestedSection?: StudySection;
+  onSectionHandled?: () => void;
+}
+
+export function StudyMode({
+  requestedSection,
+  onSectionHandled,
+}: StudyModeProps) {
   const [activeSection, setActiveSection] = useState<string>(
     MENU_SECTIONS[0].id,
   );
+
+  // Navigate to requested section from global search
+  useEffect(() => {
+    if (!requestedSection) return;
+    const sectionMap: Record<StudySection, string> = {
+      menu: MENU_SECTIONS[0].id,
+      wine: "wine",
+      "wine-bottle": "wine-bottle",
+      sake: "sake",
+      "sake-bottle": "sake-bottle",
+      "white-burgundy": "white-burgundy",
+      cocktail: "cocktail",
+    };
+    setActiveSection(sectionMap[requestedSection]);
+    onSectionHandled?.();
+  }, [requestedSection, onSectionHandled]);
 
   const isWineSection = activeSection === "wine";
   const isSakeSection = activeSection === "sake";
   const isWhiteBurgundySection = activeSection === "white-burgundy";
   const isCocktailSection = activeSection === "cocktail";
+  const isSakeBottleSection = activeSection === "sake-bottle";
+  const isWineBottleSection = activeSection === "wine-bottle";
   const section =
     !isWineSection &&
     !isSakeSection &&
     !isWhiteBurgundySection &&
-    !isCocktailSection
+    !isCocktailSection &&
+    !isSakeBottleSection &&
+    !isWineBottleSection
       ? (MENU_SECTIONS.find((s) => s.id === activeSection) ?? MENU_SECTIONS[0])
       : null;
 
@@ -51,6 +83,10 @@ export function StudyMode() {
             <BookMarked className="w-5 h-5 text-gold" />
           ) : isCocktailSection ? (
             <GlassWater className="w-5 h-5 text-gold" />
+          ) : isSakeBottleSection ? (
+            <Package className="w-5 h-5 text-gold" />
+          ) : isWineBottleSection ? (
+            <Wine className="w-5 h-5 text-gold" />
           ) : (
             <ChefHat className="w-5 h-5 text-gold" />
           )}
@@ -63,7 +99,11 @@ export function StudyMode() {
                   ? "White Burgundy"
                   : isCocktailSection
                     ? "Cocktail Program"
-                    : "Menu Study"}
+                    : isSakeBottleSection
+                      ? "Sake by the Bottle"
+                      : isWineBottleSection
+                        ? "Wine by the Bottle"
+                        : "Menu Study"}
           </span>
         </div>
         <h1 className="font-serif text-3xl md:text-4xl text-foreground mb-3">
@@ -75,18 +115,26 @@ export function StudyMode() {
                 ? "White Burgundy Bottle Program"
                 : isCocktailSection
                   ? "AMA Signature Cocktail Program"
-                  : "Study the Menu"}
+                  : isSakeBottleSection
+                    ? "Sake by the Bottle"
+                    : isWineBottleSection
+                      ? "Wine by the Bottle"
+                      : "Study the Menu"}
         </h1>
         <p className="font-sans text-muted-foreground text-base leading-relaxed max-w-xl">
           {isWineSection
-            ? "Our complete wine by the glass program — 13 selections spanning Champagne, white, rosé, and red wines. Tasting notes, winemaking details, pricing, glassware, and guest-facing descriptions."
+            ? "Our complete wine by the glass program — 13 selections spanning Champagne, white, ros\u00e9, and red wines. Tasting notes, winemaking details, pricing, glassware, and guest-facing descriptions."
             : isSakeSection
               ? "Our curated sake by the glass program — 6 selections from Honjozo to Junmai Daiginjo. Classifications, rice varietals, SMV, tasting notes, brewery stories, and guest-facing descriptions."
               : isWhiteBurgundySection
                 ? "Five exceptional White Burgundy bottle pairings — from lean Chablis to opulent Meursault. The Burgundy hierarchy, key terroir terms, tasting notes, estate stories, and elevated food pairings."
                 : isCocktailSection
                   ? "The complete AMA cocktail program — 8 signature cocktails and 3 dedicated mocktails. Signature spirits, service sequences, guest one-liners, dietary flags, and tableside service moments."
-                  : "Explore each section of the AMA Sushi menu — ingredients, dietary information, beverage pairings, and the service notes that elevate every dish."}
+                  : isSakeBottleSection
+                    ? "The complete AMA Sushi bottle program — spanning humble, honest honjozo to the rarest and most technically extraordinary bottles produced anywhere in the world."
+                    : isWineBottleSection
+                      ? "The complete AMA Sushi wine bottle program — Champagnes, whites, and rosés spanning approachable California bottles to world-class icons. Tasting notes, producer stories, and guest guidance."
+                      : "Explore each section of the AMA Sushi menu — ingredients, dietary information, beverage pairings, and the service notes that elevate every dish."}
         </p>
       </motion.div>
 
@@ -127,7 +175,21 @@ export function StudyMode() {
             <Wine className="w-3.5 h-3.5" />
             Wine Program
           </button>
-          {/* Sake tab */}
+          {/* Wine Bottles tab */}
+          <button
+            type="button"
+            data-ocid="study.wine-bottle.tab"
+            onClick={() => setActiveSection("wine-bottle")}
+            className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-sans font-medium transition-all duration-200 whitespace-nowrap ${
+              activeSection === "wine-bottle"
+                ? "bg-primary text-primary-foreground shadow-xs"
+                : "bg-secondary text-secondary-foreground hover:bg-accent hover:text-accent-foreground"
+            }`}
+          >
+            <Package className="w-3.5 h-3.5" />
+            Wine Bottles
+          </button>
+          {/* Sake BTG tab */}
           <button
             type="button"
             data-ocid="study.sake.tab"
@@ -140,6 +202,20 @@ export function StudyMode() {
           >
             <Droplets className="w-3.5 h-3.5" />
             Sake Program
+          </button>
+          {/* Sake Bottles tab */}
+          <button
+            type="button"
+            data-ocid="study.sake-bottle.tab"
+            onClick={() => setActiveSection("sake-bottle")}
+            className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-sans font-medium transition-all duration-200 whitespace-nowrap ${
+              activeSection === "sake-bottle"
+                ? "bg-primary text-primary-foreground shadow-xs"
+                : "bg-secondary text-secondary-foreground hover:bg-accent hover:text-accent-foreground"
+            }`}
+          >
+            <Package className="w-3.5 h-3.5" />
+            Sake Bottles
           </button>
           {/* White Burgundy tab */}
           <button
@@ -185,6 +261,10 @@ export function StudyMode() {
             <WineSection />
           ) : isSakeSection ? (
             <SakeSection />
+          ) : isSakeBottleSection ? (
+            <SakeBottleSection />
+          ) : isWineBottleSection ? (
+            <WineBottleSection />
           ) : isWhiteBurgundySection ? (
             <WhiteBurgundySection />
           ) : isCocktailSection ? (

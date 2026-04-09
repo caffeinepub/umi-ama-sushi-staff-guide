@@ -1,7 +1,15 @@
 export type QuizQuestion = {
   id: number;
   type: "multiple-choice" | "true-false" | "scenario";
-  category: "menu" | "forbes" | "wine" | "sake" | "white-burgundy" | "cocktail";
+  category:
+    | "menu"
+    | "forbes"
+    | "wine"
+    | "sake"
+    | "white-burgundy"
+    | "cocktail"
+    | "sake-bottle"
+    | "wine-bottle";
   question: string;
   options: string[];
   correctIndex: number;
@@ -1007,5 +1015,507 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     correctIndex: 1,
     explanation:
       "Furikake is a Japanese seasoning blend of sesame seeds, seaweed, and salt — traditionally used as a rice topping. At AMA, it is used as a garnish on Odaya (the rum sour) and Hakuro (the yuzu shiso mocktail), where it slowly infuses into the drink over time, adding a subtle savory dimension.",
+  },
+  {
+    id: 70,
+    type: "multiple-choice",
+    category: "sake-bottle",
+    question: "What makes the Reikyo Absolute 0 technically unique?",
+    options: [
+      "It is brewed at sub-zero temperatures and uses synthetic yeast",
+      "It has been polished to 0.85% — 99.15% of the grain removed over 221 days of milling",
+      "It is the oldest sake in continuous production in Japan",
+      "It uses a wild koji strain found only in Miyagi prefecture",
+    ],
+    correctIndex: 1,
+    explanation:
+      "The Reikyo Absolute 0 was milled over 5,297 hours (221 days) to reach 0.85% remaining grain — the most polished sake ever produced. Japanese law now rounds up from 0.85%, so it must be labeled 1%. Only pre-2019 bottles were legally labeled '0%'. It is aged at -5°C and produced in 999 bottles per year.",
+  },
+  {
+    id: 71,
+    type: "multiple-choice",
+    category: "sake-bottle",
+    question:
+      "Which two sakes on the bottle list are from the same toji, and what connects them?",
+    options: [
+      "Jikon Senbon Nishiki and Jikon Omachi — both by Toji Tadayoshi Onishi of Kiyasho Shuzo",
+      "Zankyo Super 7 and Reikyo Absolute 0 — both by Niizawa Jozoten in Miyagi",
+      "Fukucho Moon on the Water and Fukucho Seaside Sparkling — both by Miho Imada, Japan's only female brewery owner-toji",
+      "Toko Sun Rise and Toko Divine Droplets — both from the same Yamagata brewery",
+    ],
+    correctIndex: 2,
+    explanation:
+      "Miho Imada is Japan's only female brewery owner-toji, responsible for both Fukucho Moon on the Water (Junmai Ginjo) and Fukucho Seaside Sparkling. The Seaside uses rare white koji for its wine-like citric acidity and is secondary bottle-fermented like Champagne. Both come from Hiroshima — the birthplace of ginjo sake.",
+  },
+  {
+    id: 72,
+    type: "multiple-choice",
+    category: "sake-bottle",
+    question:
+      "What is the shizuku method and which sake on the bottle list uses it?",
+    options: [
+      "A double-distillation technique for higher ABV — used in Kikuhime Yamahai Genshu",
+      "Extended cold fermentation over winter — used in Zankyo Super 7",
+      "Gravity drip pressing — no mechanical pressure, only gravity collects the sake — used in Toko Divine Droplets",
+      "An ancient pressing technique using heated rice bags — used in Mana 1751 True Vision",
+    ],
+    correctIndex: 2,
+    explanation:
+      "Shizuku means gravity drip pressing — the sake drips through the cloth by its own weight, with no mechanical pressure applied to the moromi. Only the most delicate fraction of sake is collected, resulting in maximum purity and finesse. Used in Toko Divine Droplets from the same brewery (founded 1579) that makes Sun Rise.",
+  },
+  {
+    id: 73,
+    type: "true-false",
+    category: "sake-bottle",
+    question:
+      "The Reikyo Absolute 0 is currently legally permitted to be labeled 0% polishing ratio.",
+    options: ["True", "False"],
+    correctIndex: 1,
+    explanation:
+      "False. Japanese law now rounds up from 0.85%, so the Reikyo Absolute 0 must be labeled as 1% polishing ratio. Only bottles produced before 2019 were ever legally labeled '0%'. The name refers to the absolute zero temperature (-5°C) at which the sake is aged, not to a literal 0% polish under current law.",
+  },
+  {
+    id: 74,
+    type: "multiple-choice",
+    category: "sake-bottle",
+    question:
+      "What is Yamahai, and which of these best describes the style difference compared to standard sake?",
+    options: [
+      "A blending technique combining multiple vintages for consistency — results in a lighter, cleaner style",
+      "A traditional method using naturally cultivated lactic bacteria — results in higher acidity, bolder umami, and more complex, earthy or smoky character",
+      "A cold-filtration process that removes color and sediment — creates a cleaner, more delicate sake",
+      "A pasteurization method used to stabilize sake for long shipping — no flavor impact",
+    ],
+    correctIndex: 1,
+    explanation:
+      "Yamahai uses naturally cultivated lactic bacteria rather than commercial starter cultures. It produces higher acidity and bolder umami — sometimes earthy, smoky, or wild in character. Like the difference between a natural wine and a conventionally made wine. On this list: Kikuhime, Mana 1751 True Vision, and Shiokawa Cowboy are all Yamahai.",
+  },
+  {
+    id: 75,
+    type: "multiple-choice",
+    category: "sake-bottle",
+    question: "What makes the Jikon Omachi at $990 worth the price?",
+    options: [
+      "It is the oldest sake brewery in Japan and uses ancient wooden fermentation tanks",
+      "Omachi is Japan's oldest sake rice — wild, complex, and difficult to brew — combined with Jikon's lottery-only allocation and electric house acidity",
+      "It has the highest ABV of any bottle on the list and is aged for over 20 years",
+      "It won the IWC Champion Sake award five consecutive years",
+    ],
+    correctIndex: 1,
+    explanation:
+      "Omachi is Japan's oldest cultivated sake rice — wild, complex, and extremely difficult to grow and brew. Jikon is a cult producer with lottery-only allocation in Japan and tiny global distribution. Their house signature — luminous, electric acidity from meticulous koji work — combined with Omachi's earthy depth and hazelnut-caramel complexity makes this a genuinely irreplicable expression. The price reflects rarity, not marketing.",
+  },
+  {
+    id: 76,
+    type: "multiple-choice",
+    category: "sake-bottle",
+    question:
+      "What is white koji (shiroji) and which sake on the bottle list uses it?",
+    options: [
+      "A red-pigmented koji that produces fruity esters — used in Jikon Senbon Nishiki",
+      "An extremely rare koji that produces citric acid rather than lactic acid — giving wine-like, sharp, bright acidity — used in Fukucho Seaside Sparkling",
+      "A genetically modified koji strain developed for consistency — used in Nanbu Bijin Southern Beauty",
+      "A yellow koji variant that produces more sweetness — used in Rihaku Dreamy Clouds",
+    ],
+    correctIndex: 1,
+    explanation:
+      "White koji (shiroji) is extremely rare in sake production. Instead of producing lactic acid like standard koji, it produces citric acid — giving a wine-like, sharp, bright acidity. Fukucho Seaside Sparkling uses white koji plus secondary bottle fermentation (méthode champenoise-style), making it closer to pétillant naturel than typical sparkling sake. The SMV of -40 appears sweet on paper but the citric acid dominates.",
+  },
+  {
+    id: 77,
+    type: "multiple-choice",
+    category: "sake-bottle",
+    question:
+      "Atago No Matsu costs $65. Zankyo Super 7 costs $2,850. Both are from the same brewery. What does this tell you about Niizawa Jozoten?",
+    options: [
+      "The brewery prices inconsistently due to marketing decisions, not quality differences",
+      "Niizawa Jozoten uses their best Yamada Nishiki rice only for their flagship bottles",
+      "Niizawa Jozoten applies the same philosophy at every price point — using Grade A Yamada Nishiki even in their honjozo, believing every guest deserves the best rice",
+      "The Atago No Matsu is a different label purchased by Niizawa Jozoten",
+    ],
+    correctIndex: 2,
+    explanation:
+      "Niizawa Jozoten uses Grade A Yamada Nishiki — the variety normally reserved for premium daiginjo — even in their $65 Tokubetsu Honjozo. Their philosophy is that every price point deserves the best rice. The Atago No Matsu is one of the best values on the list: same brewery, same ingredient standards as the $2,850 Zankyo and $9,995 Reikyo.",
+  },
+  {
+    id: 78,
+    type: "scenario",
+    category: "sake-bottle",
+    question:
+      "A guest tells you they've tried sake before and always found it sweet and thick — they don't think they like it. Which bottle would you guide them toward first, and why?",
+    options: [
+      "Kikuhime Yamahai Genshu — it's full-bodied and rich, which shows sake's true complexity",
+      "Rihaku Dreamy Clouds — it invented the dry nigori category; it looks cloudy but drinks lean, nutty, and surprisingly dry, the opposite of what they expect",
+      "Fukucho Seaside Sparkling — the white koji and bottle fermentation make it the most unique expression on the list",
+      "Jikon Omachi — the electric acidity and complexity will immediately change their mind about sake",
+    ],
+    correctIndex: 1,
+    explanation:
+      "Rihaku Dreamy Clouds is the ideal answer for a guest who thinks they don't like sake. It invented the dry, light-style nigori — and it defies every expectation: lean, nutty, acidic, and dry where others are sweet and thick. It was Japan's first nigori brewed at Junmai Ginjo polishing level. Alternatively, Isojiman Pride of the Seashore (SMV +5, clean, saline) is excellent for guests who want dry precision.",
+  },
+  {
+    id: 79,
+    type: "multiple-choice",
+    category: "sake-bottle",
+    question:
+      "Which sake on the bottle list was the Grammy Awards official sake in 2010?",
+    options: [
+      "Reikyo Absolute 0 — for its extraordinary craftsmanship",
+      "Jikon Omachi — for its rarity and prestige",
+      "Zankyo Super 7 — Niizawa Jozoten",
+      "Kikuhime Yamahai Genshu — for its aging potential",
+    ],
+    correctIndex: 2,
+    explanation:
+      "The Zankyo Super 7 from Niizawa Jozoten was the Grammy Awards 2010 official sake. It was also the world's most polished commercially available sake at release (7% remaining grain, 350 hours of milling) and received Wine Advocate 98 points. The name Zankyo means 'reverberation' — describing the lingering but elusive finish.",
+  },
+
+  // ── WINE BOTTLE QUESTIONS ──────────────────────────────────────────────────
+  {
+    id: 80,
+    type: "multiple-choice",
+    category: "wine-bottle",
+    question:
+      "Delamotte Blanc de Blancs is often described as Salon-quality fruit. What is the relationship between Delamotte and Salon?",
+    options: [
+      "Delamotte is a négociant that purchases Salon's excess grapes",
+      "Salon and Delamotte are owned by the same group — when Salon doesn't declare a vintage, Delamotte has first access to those Grand Cru grapes",
+      "Delamotte is a previous name for Salon, now rebranded for export markets",
+      "Both houses share the same caves but use different winemaking teams",
+    ],
+    correctIndex: 1,
+    explanation:
+      "Delamotte is the sister house to the legendary Salon — owned by the same group. When Salon doesn't declare a vintage (which it does only in exceptional years), Delamotte has first access to those Grand Cru Côte des Blancs grapes. This makes Delamotte a remarkable value — essentially Salon-quality fruit in a more accessible and consistently available format.",
+  },
+  {
+    id: 81,
+    type: "multiple-choice",
+    category: "wine-bottle",
+    question:
+      "Krug Grand Cuvée is fermented in small oak barrels. Why is this unusual for Champagne?",
+    options: [
+      "Oak barrels are prohibited under AOC law for non-vintage Champagnes",
+      "Oak fermentation adds cost — most Champagne houses ferment in stainless steel to preserve freshness and control costs",
+      "Oak barrels only work with Pinot Noir, not Chardonnay-dominant blends",
+      "The small barrels reduce the amount of yeast contact during fermentation",
+    ],
+    correctIndex: 1,
+    explanation:
+      "The vast majority of Champagne is fermented in temperature-controlled stainless steel tanks, which preserves freshness, consistency, and reduces cost. Krug is one of only a handful of houses that ferments in small oak barrels — a labour-intensive, expensive method that adds texture, richness, and complexity. It is a signature of Krug's philosophy of treating each harvest wine individually.",
+  },
+  {
+    id: 82,
+    type: "multiple-choice",
+    category: "wine-bottle",
+    question:
+      "In what year did Billecart-Salmon pioneer rosé Champagne, and why is this historically significant?",
+    options: [
+      "1818 — the year the house was founded",
+      "1945 — immediately after World War II, when celebrations required new styles",
+      "1954 — making it one of the earliest commercially released rosé Champagnes from a major house",
+      "1972 — the year President Nixon served Champagne in Beijing",
+    ],
+    correctIndex: 2,
+    explanation:
+      "Billecart-Salmon pioneered rosé Champagne when they released it in 1954 — one of the earliest commercial rosé Champagnes from any major house. They established the benchmark style: restrained, dry, and precise, with pale salmon colour and delicate wild strawberry character. Their commitment to very low dosage (~5g/L) ensures the wine is never sweet.",
+  },
+  {
+    id: 83,
+    type: "multiple-choice",
+    category: "wine-bottle",
+    question:
+      "What do the scores Wine Spectator 96 and Wine Advocate 95 refer to on the bottle list, and what vintage earned them?",
+    options: [
+      "The 2008 Dom Pérignon — considered a decade-defining vintage for acidity",
+      "The 2013 Dom Pérignon — defined by a long cool growing season and Champagne's last October harvest",
+      "The 2013 Perrier-Jouët Belle Époque Rosé — for its Art Nouveau bottle and prestige",
+      "The Krug Grand Cuvée 167th Edition — for its multi-decade blending complexity",
+    ],
+    correctIndex: 1,
+    explanation:
+      "The 2013 Dom Pérignon earned Wine Spectator 96 and Wine Advocate 95 points — and is considered by many critics the finest Dom Pérignon of the decade. The vintage was defined by a long, cool growing season and Champagne's last October harvest. Vinous described it among Champagne's 'greatest decade.' It is still developing and best enjoyed 2025–2040.",
+  },
+  {
+    id: 84,
+    type: "multiple-choice",
+    category: "wine-bottle",
+    question:
+      "Ruinart is the world's oldest Champagne house. In what year was it founded?",
+    options: ["1743", "1729", "1772", "1818"],
+    correctIndex: 1,
+    explanation:
+      "Ruinart was founded in 1729 — making it the world's oldest Champagne house. Their Brut Rosé is notably bolder and more structured than the delicate Billecart-Salmon style — driven by 55% Pinot Noir, it shows pomegranate, dark cherry, and a long saline finish. It is a rosé Champagne built for food rather than aperitif.",
+  },
+  {
+    id: 85,
+    type: "multiple-choice",
+    category: "wine-bottle",
+    question:
+      "What is the defining soil type of Chablis, and why does it make the wine ideal with shellfish?",
+    options: [
+      "Volcanic basalt — gives Chablis its characteristic gunflint minerality and power",
+      "Granitic sand — free-draining soils that produce wines of unusual lightness",
+      "Kimmeridgian limestone — ancient marine sediment rich in fossilised oyster shells, which gives Chablis a saline, oyster-shell minerality",
+      "Clay and limestone — the same as the Côte d'Or, but at cooler northern temperatures",
+    ],
+    correctIndex: 2,
+    explanation:
+      "Chablis is grown on Kimmeridgian limestone — ancient marine sediment full of fossilised oyster shells and micro-organisms. This soil type gives Chablis its signature saline, oyster-shell minerality and chalky texture. The affinity with actual oysters is both sensory (the wine mirrors the iodine-saline character of raw shellfish) and geological (the soil once was seabed).",
+  },
+  {
+    id: 86,
+    type: "multiple-choice",
+    category: "wine-bottle",
+    question:
+      "The Delavenne & Fils Tradition Brut Grand Cru undergoes no malolactic fermentation (MLF). What effect does this have on the wine's character?",
+    options: [
+      "It makes the wine sweeter and rounder by retaining more residual sugar",
+      "It preserves higher acidity and gives the wine a fresh, taut, apple-crisp character rather than a creamy, softened style",
+      "It allows longer lees aging and creates more brioche complexity",
+      "It reduces sulphur levels, making the wine suitable for guests with sensitivities",
+    ],
+    correctIndex: 1,
+    explanation:
+      "Malolactic fermentation (MLF) converts sharp malic acid into softer lactic acid, producing the characteristic creamy, buttery quality found in many Champagnes. Delavenne deliberately avoids MLF, which preserves the naturally high acidity and gives the wine a notably taut, fresh, apple-crisp character. Combined with Grand Cru fruit, no fining, and no filtration, the result is a Champagne of uncommon authenticity and vibrancy.",
+  },
+  {
+    id: 87,
+    type: "scenario",
+    category: "wine-bottle",
+    question:
+      "A guest is choosing between the Selbach-Oster Riesling Kabinett and a Chablis. They want the best possible food wine at the table that will work with everything being ordered. Which would you recommend and why?",
+    options: [
+      "The Chablis — it is French, more prestigious, and more familiar to most guests",
+      "The Selbach-Oster Riesling Kabinett — barely 9% alcohol, its natural sweetness is perfectly balanced by slate minerality, and it is one of the most genuinely food-friendly wines in the world",
+      "Neither — ask them to choose a Champagne instead, as bubbles work with everything",
+      "The Chablis — unoaked Chardonnay is always a safer choice than Riesling for pairing",
+    ],
+    correctIndex: 1,
+    explanation:
+      "The Selbach-Oster Riesling Kabinett is the ideal answer. At barely 8–9% ABV with natural sweetness balanced by Mosel slate minerality, it has an almost magical versatility with food. The low alcohol means it doesn't overpower delicate raw fish; the acidity cuts through richness; the touch of sweetness bridges spice and umami. Chablis is excellent, but the Kabinett's range across all food types is exceptional.",
+  },
+  {
+    id: 88,
+    type: "multiple-choice",
+    category: "wine-bottle",
+    question:
+      "Graham Tatomer trained in Austria's Wachau before bringing Grüner Veltliner to California. What does 'Meeresboden' mean in German, and what does it refer to?",
+    options: [
+      "Sea floor — referencing the ancient marine sediment soils of Santa Barbara",
+      "Morning mist — referencing the Pacific fog that rolls into the vineyards",
+      "Tidal wave — a reference to the intensity and power of the wine",
+      "Sea breeze — referencing the ocean winds that cool the vineyard",
+    ],
+    correctIndex: 0,
+    explanation:
+      "'Meeresboden' means sea floor in German. Tatomer uses it to reference the ancient marine soils beneath the Santa Barbara vineyard — the same geological connection that gives Chablis its oyster-shell character. The cool coastal climate of Santa Barbara replicates the Alpine growing conditions of Austria's Wachau, making Grüner Veltliner's signature white pepper and mineral character authentic to the site.",
+  },
+  {
+    id: 89,
+    type: "multiple-choice",
+    category: "wine-bottle",
+    question:
+      "Domaine Leflaive Puligny-Montrachet is the most expensive white wine on the bottle list. What farming philosophy do they follow, and why does it matter?",
+    options: [
+      "Organic farming — no synthetic pesticides, but conventional cellar practices",
+      "Lutte raisonnée — reasoned struggle, the most common approach in Burgundy",
+      "Biodynamic farming — a holistic approach treating the estate as a living system, following lunar calendars and using natural preparations",
+      "Conventional farming — the estate believes modern winemaking outweighs farming philosophy",
+    ],
+    correctIndex: 2,
+    explanation:
+      "Domaine Leflaive practices biodynamic farming — a holistic system that treats the entire estate as a living organism, following lunar calendars for vineyard work and using natural herbal and mineral preparations. This philosophy is believed to deepen the expression of terroir and improve soil health. Leflaive converted to biodynamics under Anne-Claude Leflaive and is considered one of Burgundy's great ambassadors for the method. Even at village level, their wines carry the same care and philosophy as their Grand Cru bottlings.",
+  },
+  {
+    id: 90,
+    type: "scenario",
+    category: "wine-bottle",
+    question:
+      "A guest says: 'I love Champagne but I want something really special — not just any bottle.' Which bottle would you present, and what would you say?",
+    options: [
+      "Billecart-Salmon Brut Rosé — 'This is the benchmark rosé Champagne, they pioneered the style in 1954'",
+      "Taittinger La Française — 'This is one of the most reliable and crowd-pleasing Champagnes produced'",
+      "Dom Pérignon 2013 — 'Many critics consider this the finest Dom Pérignon of the decade — a long cool growing season and Champagne's last October harvest. Wine Spectator 96. Still developing beautifully.'",
+      "Bisol Prosecco — 'From the founding family of Prosecco Superiore, farming since 1542'",
+    ],
+    correctIndex: 2,
+    explanation:
+      "For a guest who wants something truly special, the Dom Pérignon 2013 is the standout answer — it carries iconic recognition, exceptional critical scores (WS 96, WA 95), and a compelling vintage story. The 2013 is considered by many critics the finest Dom Pérignon of the decade. Belle Époque Rosé ($670) is equally impressive for guests who want something visually spectacular — the Art Nouveau anemone bottle designed by Émile Gallé is a conversation piece in itself.",
+  },
+  {
+    id: 91,
+    type: "multiple-choice",
+    category: "wine-bottle",
+    question:
+      "The Perrier-Jouët Belle Époque Rosé bottle features a famous Art Nouveau design. Who designed it, and what is depicted?",
+    options: [
+      "Alphonse Mucha — his signature flowing Art Nouveau figures in pastel tones",
+      "Henri de Toulouse-Lautrec — a depiction of Parisian cabaret life",
+      "Émile Gallé — an iconic anemone flower design that has become one of Champagne's most recognisable bottles",
+      "Gustav Klimt — a gold-leaf pattern inspired by his Vienna Secession paintings",
+    ],
+    correctIndex: 2,
+    explanation:
+      "The Belle Époque bottle was designed by Émile Gallé, the renowned French Art Nouveau glassmaker, and features an anemone flower design that has become one of the most iconic in the world of Champagne. The bottle is as much a work of art as the wine inside. Belle Époque Rosé is only produced in exceptional years — and 2013 is considered one of the finest of the decade.",
+  },
+
+  // ── RED WINE BOTTLE QUESTIONS ──────────────────────────────────────────────
+  {
+    id: 92,
+    type: "multiple-choice",
+    category: "wine-bottle",
+    question:
+      "What makes the 2016 Qupé Sawyer Lindquist Syrah particularly special, and where is it from?",
+    options: [
+      "Napa Valley at 6 years old — a warm-climate Syrah at its peak",
+      "Edna Valley, California's original cool-climate Syrah pioneer, at 8 years and absolute peak",
+      "Russian River Valley, a bold new-world Syrah with northern Rhône character",
+      "Paso Robles, a generous warm-climate Syrah from old vines",
+    ],
+    correctIndex: 1,
+    explanation:
+      "California's original cool-climate Syrah pioneer — from Edna Valley, not Napa. Bob Lindquist created the Northern Rhône template for California. At 8 years old it is drinking at absolute peak.",
+  },
+  {
+    id: 93,
+    type: "multiple-choice",
+    category: "wine-bottle",
+    question:
+      "What is a Super Tuscan and which wine on our list invented the category?",
+    options: [
+      "A Chianti with extra aging — Brunello di Montalcino from Castiglion del Bosco",
+      "A Tuscan wine made outside traditional DOC rules using Cabernet or Merlot — Sassicaia from Bolgheri",
+      "A premium Sangiovese from outside Chianti — Castiglion del Bosco",
+      "A modern Barolo using French oak — Gaja Dagromis",
+    ],
+    correctIndex: 1,
+    explanation:
+      "A Tuscan wine made outside traditional DOC rules — typically using Cabernet Sauvignon or Merlot. Sassicaia from Bolgheri created the category and has its own single-estate DOC — the only one in all of Italy.",
+  },
+  {
+    id: 94,
+    type: "scenario",
+    category: "wine-bottle",
+    question:
+      "Randy Dunn's Howell Mountain Cabernet is described as old-school and austere. What does that mean for a guest?",
+    options: [
+      "It is a lighter style, perfect for guests who prefer delicate wines",
+      "It is built for 20–30 years of aging — more structured and tannic than modern Napa Cabs, best with food and serious occasions",
+      "It is a sweet, approachable style with soft tannins — ideal for all guests",
+      "It is a sparkling wine served as a finale",
+    ],
+    correctIndex: 1,
+    explanation:
+      "Built for 20 to 30 years of aging — more structured and tannic than modern Napa Cabernets. Best with food and serious occasions. Best enjoyed 2025–2035.",
+  },
+  {
+    id: 95,
+    type: "multiple-choice",
+    category: "wine-bottle",
+    question: "Who created Opus One and when was it established?",
+    options: [
+      "Robert Parker and Baron Rothschild, 1985",
+      "Robert Mondavi and Baron Philippe de Rothschild of Château Mouton — established 1979",
+      "Warren Winiarski and Émile Peynaud — established 1976",
+      "Jess Jackson and Domaine Leflaive — established 1982",
+    ],
+    correctIndex: 1,
+    explanation:
+      "Robert Mondavi and Baron Philippe de Rothschild of Château Mouton — established 1979. One of wine's great historic Franco-American collaborations and now one of the most recognised wine labels in the world.",
+  },
+  {
+    id: 96,
+    type: "multiple-choice",
+    category: "wine-bottle",
+    question:
+      "What is the difference between Vietti Perbacco and Gaja Dagromis, and which grape do they share?",
+    options: [
+      "Both are Barbera from Piedmont — Perbacco is lighter, Dagromis is fuller",
+      "Both are Nebbiolo from Piedmont — Perbacco is accessible Langhe Nebbiolo, Dagromis is full Barolo DOCG from Italy's most celebrated producer",
+      "Perbacco is Barbera, Dagromis is Sangiovese — they share no grape",
+      "Both are Brunello — Perbacco from Montalcino, Dagromis from Bolgheri",
+    ],
+    correctIndex: 1,
+    explanation:
+      "Both are 100% Nebbiolo from Piedmont. Perbacco is an approachable Langhe Nebbiolo — the grape before the full Barolo DOCG structure. Dagromis is a full Barolo DOCG from Italy's most celebrated producer.",
+  },
+  {
+    id: 97,
+    type: "scenario",
+    category: "wine-bottle",
+    question:
+      "Braida Montebruna is described as having extraordinary natural acidity. Why does that matter for food pairing?",
+    options: [
+      "High acidity makes it difficult to pair — it only works with aged cheese",
+      "Very high natural acidity acts as a palate cleanser, cutting through rich and fatty dishes — making it one of the most versatile food wines on the list",
+      "High acidity means it needs to be served very cold to be enjoyable",
+      "It only pairs with raw fish preparations",
+    ],
+    correctIndex: 1,
+    explanation:
+      "Very high natural acidity acts as a palate cleanser — it cuts through rich, fatty, or tomato-based dishes. Barbera's extraordinary natural acidity makes Braida Montebruna one of the most versatile food wines on the list.",
+  },
+  {
+    id: 98,
+    type: "multiple-choice",
+    category: "wine-bottle",
+    question: "What makes Sassicaia unique in Italian wine law?",
+    options: [
+      "It requires 10 years of aging before release — the longest of any Italian wine",
+      "It has its own DOC — the Bolgheri Sassicaia DOC — the only single-estate DOC in all of Italy, created specifically for this wine",
+      "It is the only Italian wine permitted to use French oak barrels exclusively",
+      "It is produced using a secret blend of 12 grape varieties unique to the estate",
+    ],
+    correctIndex: 1,
+    explanation:
+      "It has its own DOC — the Bolgheri Sassicaia DOC — the only single-estate DOC in all of Italy, created specifically for this wine. It was so exceptional that Italian wine law had to bend to accommodate it.",
+  },
+  {
+    id: 99,
+    type: "scenario",
+    category: "wine-bottle",
+    question:
+      "A guest wants a Pinot Noir that drinks like Burgundy. What do you recommend and why?",
+    options: [
+      "Austin Hope Cabernet — it has French oak aging similar to Burgundy",
+      "Penner-Ash Willamette Valley for cool-climate elegance between California and Burgundy; or DuMol Wester Reach for RRV at its Burgundian best; for the pinnacle, Kistler RRV",
+      "Turley Zinfandel — its acidity is similar to Burgundy",
+      "Shafer One Point Five — Stags Leap is the closest Napa sub-appellation to Burgundy in style",
+    ],
+    correctIndex: 1,
+    explanation:
+      "Penner-Ash Willamette Valley for cool-climate elegance that sits between California and Burgundy. DuMol Wester Reach for Russian River Valley at its most Burgundian. For the pinnacle, Kistler RRV shares the same biodynamic, terroir-driven philosophy as top Burgundy.",
+  },
+  {
+    id: 100,
+    type: "multiple-choice",
+    category: "wine-bottle",
+    question:
+      "What sub-appellation is the Shafer One Point Five from, and what is it famous for?",
+    options: [
+      "Russian River Valley — famous for Pinot Noir and fog-driven cool climate",
+      "Stags Leap District — known for producing Napa's most elegant Cabernets, the 'iron fist in a velvet glove'",
+      "Howell Mountain — known for powerful, austere, mountain-grown Cabernets",
+      "Oakville — home of Opus One and the most prestigious Cabernet terroir",
+    ],
+    correctIndex: 1,
+    explanation:
+      "Stags Leap District — known for producing Napa's most elegant Cabernets, described as an 'iron fist in a velvet glove.' Shafer's Hillside Select and One Point Five are benchmark wines from this distinguished sub-appellation.",
+  },
+  {
+    id: 101,
+    type: "multiple-choice",
+    category: "wine-bottle",
+    question:
+      "Brunello di Montalcino has strict aging requirements by law. What are they, and who owns Castiglion del Bosco?",
+    options: [
+      "Minimum 3 years, 1 year in oak — owned by the Antinori family",
+      "Minimum 5 years before release, including at least 2 years in large Slavonian oak — owned by Massimo Ferragamo",
+      "Minimum 7 years, no oak requirement — owned by Gaja",
+      "Minimum 2 years, 6 months in barrique — owned by the Frescobaldi family",
+    ],
+    correctIndex: 1,
+    explanation:
+      "Brunello di Montalcino legally requires a minimum of 5 years before release — including at least 2 years in large Slavonian oak. Castiglion del Bosco is owned by Massimo Ferragamo — one of Montalcino's most prestigious estates.",
   },
 ];

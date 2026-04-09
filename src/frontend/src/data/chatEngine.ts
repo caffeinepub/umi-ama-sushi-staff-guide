@@ -7,6 +7,13 @@ import {
 import { GLOSSARY_TERMS } from "./glossaryData";
 import { ALL_MENU_ITEMS, MENU_SECTIONS, type MenuItem } from "./menuData";
 import {
+  SAKE_BOTTLES,
+  SAKE_BOTTLE_GUEST_GUIDANCE,
+  SAKE_BOTTLE_RICE_VARIETIES,
+  SAKE_METHODS_GLOSSARY,
+  findSakeBottle,
+} from "./sakeBottleData";
+import {
   SAKES,
   SAKE_CLASSIFICATIONS,
   SAKE_LADDER,
@@ -20,6 +27,11 @@ import {
   WHITE_BURGUNDY_WINES,
   findWhiteBurgundy,
 } from "./whiteBurgundyData";
+import {
+  WINE_BOTTLES,
+  WINE_BOTTLE_GUEST_GUIDANCE,
+  findWineBottle,
+} from "./wineBottleData";
 import { WINES, findWine } from "./wineData";
 
 type ChatResponse = {
@@ -549,6 +561,565 @@ export function generateResponse(userMessage: string): ChatResponse {
   ) {
     return {
       text: `Our sake program spans six curated selections:\n\n${SAKES.map((s) => `**${s.name}** — ${s.classification} · $${s.glassPrice}/glass${s.carafePrice ? ` · $${s.carafePrice}/carafe` : ""}`).join("\n")}\n\nClassifications range from Honjozo (approachable, versatile) to Junmai Daiginjo (the pinnacle of refinement). Styles include sparkling, dry, mineral, aromatic, and creamy Nigori. Please explore the Sake Program tab in Study Mode for full tasting notes and service details.`,
+    };
+  }
+
+  // ── SAKE BOTTLE HANDLERS ───────────────────────────────────────────────────
+
+  // Individual bottle lookup
+  const specificBottle = findSakeBottle(q);
+  if (
+    specificBottle &&
+    (q.includes("bottle") ||
+      q.includes("sake") ||
+      q.includes(specificBottle.id) ||
+      q.includes(specificBottle.name.toLowerCase().split(" ")[0]))
+  ) {
+    const methodNote =
+      specificBottle.methodTags.length > 0
+        ? `\n*Methods:* ${specificBottle.methodTags.join(", ")}`
+        : "";
+    const polishNote = specificBottle.polish
+      ? ` · *Polish:* ${specificBottle.polish}`
+      : "";
+    const abvNote = specificBottle.abv ? ` · *ABV:* ${specificBottle.abv}` : "";
+    const smvNote = specificBottle.smv ? ` · *SMV:* ${specificBottle.smv}` : "";
+    const acidNote = specificBottle.acidity
+      ? ` · *Acidity:* ${specificBottle.acidity}`
+      : "";
+    const priceStr =
+      specificBottle.price >= 1000
+        ? `$${specificBottle.price.toLocaleString()}`
+        : `$${specificBottle.price}`;
+    const priceFull = specificBottle.priceLabel
+      ? `${priceStr} / ${specificBottle.priceLabel}`
+      : priceStr;
+    return {
+      text: `**${specificBottle.name}**\n\n*Category:* ${specificBottle.category} · *Prefecture:* ${specificBottle.prefecture}\n*Price:* ${priceFull}${methodNote}\n*Rice:* ${specificBottle.rice}${polishNote}${abvNote}${smvNote}${acidNote}\n\n*Nose:* ${specificBottle.nose}\n\n*Palate:* ${specificBottle.palate}\n\n*The Story:* ${specificBottle.story}\n\n*Best With:* ${specificBottle.bestWith}\n\n*"${specificBottle.guestOneLiner}"*`,
+    };
+  }
+
+  // Sake bottle list overview
+  if (
+    q.includes("sake bottle") ||
+    q.includes("bottle list") ||
+    q.includes("sake by the bottle") ||
+    q.includes("bottle program") ||
+    (q.includes("bottle") && q.includes("sake"))
+  ) {
+    const byCategory = [
+      "Junmai Ginjo",
+      "Yamahai",
+      "Nigori",
+      "Junmai Daiginjo",
+      "Honjozo",
+      "Sparkling",
+    ] as const;
+    const grouped = byCategory
+      .map((cat) => {
+        const bottles = SAKE_BOTTLES.filter((b) => b.category === cat);
+        if (bottles.length === 0) return "";
+        return `**${cat}**\n${bottles
+          .map(
+            (b) =>
+              `${b.name} — ${b.price >= 1000 ? `$${b.price.toLocaleString()}` : `$${b.price}`}${b.priceLabel ? ` / ${b.priceLabel}` : ""}`,
+          )
+          .join("\n")}`;
+      })
+      .filter(Boolean)
+      .join("\n\n");
+    return {
+      text: `The AMA Sushi sake bottle program spans **${SAKE_BOTTLES.length} bottles** — from humble honjozo to the world\u2019s most technically extraordinary sake:\n\n${grouped}\n\nExplore the Sake Bottles tab in Study Mode for full tasting notes, stories, and guest guidance.`,
+    };
+  }
+
+  // Yamahai bottles
+  if (
+    q.includes("yamahai") &&
+    (q.includes("bottle") || q.includes("list") || q.includes("which"))
+  ) {
+    const yamahaiBottles = SAKE_BOTTLES.filter((b) =>
+      b.methodTags.includes("Yamahai"),
+    );
+    const methodGloss = SAKE_METHODS_GLOSSARY.find((m) => m.name === "Yamahai");
+    return {
+      text: `**Yamahai** — ${methodGloss?.description ?? "Traditional brewing with naturally cultivated lactic bacteria."}\n\nYamahai bottles on the list:\n\n${yamahaiBottles.map((b) => `**${b.name}** ($${b.price}) — ${b.guestOneLiner}`).join("\n\n")}`,
+    };
+  }
+
+  // Genshu bottles
+  if (
+    q.includes("genshu") &&
+    (q.includes("bottle") ||
+      q.includes("list") ||
+      q.includes("which") ||
+      q.includes("sake"))
+  ) {
+    const genshuBottles = SAKE_BOTTLES.filter((b) =>
+      b.methodTags.includes("Genshu"),
+    );
+    const methodGloss = SAKE_METHODS_GLOSSARY.find((m) => m.name === "Genshu");
+    return {
+      text: `**Genshu** — ${methodGloss?.description ?? "Undiluted sake."}\n\nGenshu bottles on the list:\n\n${genshuBottles.map((b) => `**${b.name}** ($${b.price}) — ${b.guestOneLiner}`).join("\n\n")}`,
+    };
+  }
+
+  // Nigori bottle guidance
+  if (q.includes("nigori") && q.includes("bottle")) {
+    const nigoriBottles = SAKE_BOTTLES.filter(
+      (b) =>
+        b.methodTags.includes("Nigori") ||
+        b.methodTags.includes("Usu-Nigori") ||
+        b.category === "Nigori",
+    );
+    return {
+      text: `**Nigori on the bottle list:**\n\n${nigoriBottles.map((b) => `**${b.name}** ($${b.price}) — ${b.guestOneLiner}`).join("\n\n")}\n\nRihaku Dreamy Clouds invented the dry nigori category — lean, nutty, acidic, and dry rather than sweet and thick. Road to Osaka is a lighter, more refined standard nigori.`,
+    };
+  }
+
+  // Shizuku method
+  if (q.includes("shizuku")) {
+    const shizukuBottle = SAKE_BOTTLES.find((b) =>
+      b.methodTags.includes("Shizuku"),
+    );
+    const methodGloss = SAKE_METHODS_GLOSSARY.find((m) => m.name === "Shizuku");
+    return {
+      text: `**Shizuku** — ${methodGloss?.description ?? "Gravity drip pressing."}${shizukuBottle ? `\n\nThe only bottle on this list made using the shizuku method: **${shizukuBottle.name}** ($${shizukuBottle.price}).\n\n*"${shizukuBottle.guestOneLiner}"*` : ""}`,
+    };
+  }
+
+  // White koji / shiroji
+  if (q.includes("white koji") || q.includes("shiroji")) {
+    const whiteKojiBottle = SAKE_BOTTLES.find((b) =>
+      b.methodTags.includes("White Koji"),
+    );
+    const methodGloss = SAKE_METHODS_GLOSSARY.find(
+      (m) => m.name === "White Koji (Shiroji)",
+    );
+    return {
+      text: `**White Koji (Shiroji)** — ${methodGloss?.description ?? "Produces citric acid rather than lactic acid."}${whiteKojiBottle ? `\n\nThe only bottle on this list using white koji: **${whiteKojiBottle.name}** ($${whiteKojiBottle.price}).\n\n*"${whiteKojiBottle.guestOneLiner}"*` : ""}`,
+    };
+  }
+
+  // Zankyo Super 7
+  if (
+    q.includes("zankyo") ||
+    q.includes("super 7") ||
+    q.includes("reverberation")
+  ) {
+    const zankyo = SAKE_BOTTLES.find((b) => b.id === "zankyo-super-7");
+    if (zankyo) {
+      return {
+        text: `**${zankyo.name}** — $${zankyo.price.toLocaleString()}\n\n*Prefecture:* ${zankyo.prefecture} · *Rice:* ${zankyo.rice} · *Polish:* ${zankyo.polish}\n\n*Nose:* ${zankyo.nose}\n\n*Palate:* ${zankyo.palate}\n\n*The Story:* ${zankyo.story}\n\n*Best With:* ${zankyo.bestWith}\n\n*"${zankyo.guestOneLiner}"*`,
+      };
+    }
+  }
+
+  // Reikyo Absolute 0
+  if (
+    q.includes("reikyo") ||
+    q.includes("absolute 0") ||
+    q.includes("absolute zero sake")
+  ) {
+    const reikyo = SAKE_BOTTLES.find((b) => b.id === "reikyo-absolute-0");
+    if (reikyo) {
+      return {
+        text: `**${reikyo.name}** — $${reikyo.price.toLocaleString()}\n\n*Prefecture:* ${reikyo.prefecture} · *Rice:* ${reikyo.rice} · *Polish:* ${reikyo.polish}\n\n*Nose:* ${reikyo.nose}\n\n*Palate:* ${reikyo.palate}\n\n*The Story:* ${reikyo.story}\n\n*Best With:* ${reikyo.bestWith}\n\n*"${reikyo.guestOneLiner}"*`,
+      };
+    }
+  }
+
+  // Jikon bottles
+  if (
+    q.includes("jikon") &&
+    (q.includes("bottle") ||
+      q.includes("sake") ||
+      q.includes("omachi") ||
+      q.includes("senbon"))
+  ) {
+    const jikonBottles = SAKE_BOTTLES.filter((b) => b.id.startsWith("jikon"));
+    return {
+      text: `**Jikon** is one of Japan\u2019s most coveted sake producers \u2014 lottery allocation in Japan, tiny global distribution.\n\nJikon bottles on this list:\n\n${jikonBottles.map((b) => `**${b.name}** ($${b.price >= 1000 ? b.price.toLocaleString() : b.price}) — ${b.guestOneLiner}`).join("\n\n")}`,
+    };
+  }
+
+  // Most expensive / special occasion / celebrating
+  if (
+    q.includes("most expensive") ||
+    q.includes("special occasion") ||
+    (q.includes("celebrat") && q.includes("sake"))
+  ) {
+    const zankyo = SAKE_BOTTLES.find((b) => b.id === "zankyo-super-7");
+    const reikyo = SAKE_BOTTLES.find((b) => b.id === "reikyo-absolute-0");
+    return {
+      text: `For an extraordinary occasion, the bottle list offers two pinnacle choices:\n\n**${zankyo?.name}** ($${zankyo?.price.toLocaleString()}) \u2014 Wine Advocate 98 points. 7% polishing ratio. 350 hours of milling. The name means \u2018reverberation.\u2019 One of 999 bottles.\n\n**${reikyo?.name}** ($${reikyo?.price.toLocaleString()}) \u2014 The most polished sake ever produced. 221 days of milling. Each bottle arrives in a handmade wooden box requiring three days of craftsman work. One of 999 bottles. It doesn\u2019t drink like sake \u2014 it drinks like a whisper.`,
+    };
+  }
+
+  // Rice varieties (bottle context)
+  if (
+    (q.includes("rice variety") ||
+      q.includes("sake rice") ||
+      q.includes("rice varietal")) &&
+    !q.includes("by the glass") &&
+    !q.includes("btg")
+  ) {
+    return {
+      text: `**Sake Rice Varieties on the Bottle List:**\n\n${SAKE_BOTTLE_RICE_VARIETIES.map((r) => `**${r.name}** \u2014 ${r.description}`).join("\n\n")}`,
+    };
+  }
+
+  // ── WINE BOTTLE HANDLERS ──────────────────────────────────────────────────
+
+  // Individual wine bottle lookup
+  const specificWineBottle = findWineBottle(q);
+  if (
+    specificWineBottle &&
+    (q.includes("bottle") ||
+      q.includes("wine") ||
+      q.includes(
+        specificWineBottle.name
+          .toLowerCase()
+          .replace(/[^a-z0-9\s]/g, "")
+          .split(" ")[0],
+      ))
+  ) {
+    return {
+      text: `**${specificWineBottle.vintage !== "NV" ? `${specificWineBottle.vintage} ` : ""}${specificWineBottle.name}**\n\n*Category:* ${`${specificWineBottle.category.charAt(0).toUpperCase()}${specificWineBottle.category.slice(1)}`} · *Region:* ${specificWineBottle.region}\n*Grapes:* ${specificWineBottle.grapes} · *Price:* ${specificWineBottle.price}\n\n*Tasting Profile:* ${specificWineBottle.profile}\n\n*The Producer:* ${specificWineBottle.story}\n\n*Best With:* ${specificWineBottle.bestWith}\n\n*"${specificWineBottle.guestOneLiner}"*`,
+    };
+  }
+
+  // Wine bottle by category — sparkling/champagne
+  if (
+    (q.includes("champagne bottle") ||
+      q.includes("sparkling bottle") ||
+      q.includes("bottles of champagne") ||
+      (q.includes("champagne") && q.includes("bottle"))) &&
+    !q.includes("by the glass")
+  ) {
+    const sparklingBottles = WINE_BOTTLES.filter(
+      (w) => w.category === "sparkling",
+    );
+    return {
+      text: `**Sparkling & Champagne \u2014 Bottle Program (${sparklingBottles.length} selections):**\n\n${sparklingBottles.map((w) => `**${w.vintage !== "NV" ? `${w.vintage} ` : ""}${w.name}** \u2014 ${w.price}\n*"${w.guestOneLiner}"*`).join("\n\n")}`,
+    };
+  }
+
+  // Wine bottle by category — white
+  if (
+    (q.includes("white wine bottle") ||
+      q.includes("bottles of white") ||
+      (q.includes("white") && q.includes("wine") && q.includes("bottle"))) &&
+    !q.includes("by the glass")
+  ) {
+    const whiteBottles = WINE_BOTTLES.filter((w) => w.category === "white");
+    return {
+      text: `**White Wine Bottle Program (${whiteBottles.length} selections):**\n\n${whiteBottles.map((w) => `**${w.vintage} ${w.name}** \u2014 ${w.price} | ${w.region}\n*"${w.guestOneLiner}"*`).join("\n\n")}`,
+    };
+  }
+
+  // Wine bottle by category — rosé
+  if (
+    (q.includes("rose bottle") ||
+      q.includes("ros bottle") ||
+      (q.includes("ros") && q.includes("bottle"))) &&
+    !q.includes("by the glass")
+  ) {
+    const roseBottles = WINE_BOTTLES.filter((w) => w.category === "rosé");
+    return {
+      text: `**Rosé Bottle Program (${roseBottles.length} selections):**\n\n${roseBottles.map((w) => `**${w.vintage} ${w.name}** — ${w.price} | ${w.region}\n*"${w.guestOneLiner}"*`).join("\n\n")}`,
+    };
+  }
+
+  // Wine bottle by category — red
+  if (
+    (q.includes("red wine bottle") ||
+      q.includes("red bottles") ||
+      q.includes("bottles of red") ||
+      (q.includes("red") && q.includes("wine") && q.includes("bottle"))) &&
+    !q.includes("by the glass")
+  ) {
+    const redBottles = WINE_BOTTLES.filter((w) => w.category === "red");
+    return {
+      text: `**Red Wine Bottle Program (${redBottles.length} selections):**\n\n${redBottles.map((w) => `**${w.vintage} ${w.name}** — ${w.price} | ${w.region}\n*"${w.guestOneLiner}"*`).join("\n\n")}`,
+    };
+  }
+
+  // Wine bottle program overview
+  if (
+    q.includes("wine bottle program") ||
+    q.includes("wine bottle list") ||
+    (q.includes("wine") && q.includes("bottle") && q.includes("list")) ||
+    (q.includes("wine") &&
+      q.includes("bottle") &&
+      (q.includes("program") || q.includes("all") || q.includes("selection")))
+  ) {
+    const sparkling = WINE_BOTTLES.filter((w) => w.category === "sparkling");
+    const whites = WINE_BOTTLES.filter((w) => w.category === "white");
+    const roses = WINE_BOTTLES.filter((w) => w.category === "rosé");
+    const reds = WINE_BOTTLES.filter((w) => w.category === "red");
+    return {
+      text: `The AMA Sushi wine bottle program spans **${WINE_BOTTLES.length} selections** — from approachable California bottles to world-class icons:\n\n**Sparkling & Champagne (${sparkling.length})**\n${sparkling.map((w) => `${w.vintage !== "NV" ? `${w.vintage} ` : ""}*${w.name}* — ${w.price}`).join("\n")}\n\n**White Wines (${whites.length})**\n${whites.map((w) => `${w.vintage} *${w.name}* — ${w.price}`).join("\n")}\n\n**Rosé (${roses.length})**\n${roses.map((w) => `${w.vintage} *${w.name}* — ${w.price}`).join("\n")}\n\n**Red Wines (${reds.length})**\n${reds.map((w) => `${w.vintage} *${w.name}* — ${w.price}`).join("\n")}\n\nExplore the Wine Bottles tab in Study Mode for full tasting notes and guest guidance.`,
+    };
+  }
+
+  // ── RED WINE BOTTLE SPECIFIC HANDLERS ────────────────────────────────────
+
+  // Opus One specific query
+  if (q.includes("opus one") || q.includes("opus 1")) {
+    const opus = WINE_BOTTLES.find((w) => w.id === "opus-one");
+    if (opus) {
+      return {
+        text: `**${opus.vintage} ${opus.name}** — ${opus.price}\n\n${opus.profile}\n\n${opus.story}\n\n*Best With:* ${opus.bestWith}\n\n*"${opus.guestOneLiner}"*`,
+      };
+    }
+  }
+
+  // Sassicaia specific query
+  if (
+    q.includes("sassicaia") ||
+    q.includes("super tuscan") ||
+    q.includes("bolgheri")
+  ) {
+    const sassicaia = WINE_BOTTLES.find((w) => w.id === "sassicaia-2019");
+    if (sassicaia) {
+      return {
+        text: `**${sassicaia.vintage} ${sassicaia.name}** — ${sassicaia.price}\n\n${sassicaia.profile}\n\n${sassicaia.story}\n\n*Best With:* ${sassicaia.bestWith}\n\n*"${sassicaia.guestOneLiner}"*`,
+      };
+    }
+  }
+
+  // Dunn Howell Mountain specific query
+  if (
+    q.includes("dunn") ||
+    q.includes("howell mountain") ||
+    q.includes("randy dunn")
+  ) {
+    const dunn = WINE_BOTTLES.find((w) => w.id === "dunn-howell-mountain-cab");
+    if (dunn) {
+      return {
+        text: `**${dunn.vintage} ${dunn.name}** — ${dunn.price}\n\n${dunn.profile}\n\n${dunn.story}\n\n*Best With:* ${dunn.bestWith}\n\n*"${dunn.guestOneLiner}"*`,
+      };
+    }
+  }
+
+  // Barolo — return Gaja Dagromis
+  if (
+    (q.includes("barolo") || q.includes("dagromis") || q.includes("gaja")) &&
+    q.includes("bottle")
+  ) {
+    const dagromis = WINE_BOTTLES.find((w) => w.id === "gaja-dagromis-barolo");
+    if (dagromis) {
+      return {
+        text: `**${dagromis.vintage} ${dagromis.name}** — ${dagromis.price}\n\n${dagromis.profile}\n\n${dagromis.story}\n\n*Best With:* ${dagromis.bestWith}\n\n*Barolo Aging Law:* Barolo must be aged a minimum of 3 years before release — 2 of which must be in oak. It is one of Italy's strictest production requirements.\n\n*"${dagromis.guestOneLiner}"*`,
+      };
+    }
+  }
+
+  // Brunello — return Castiglion del Bosco
+  if (
+    q.includes("brunello") ||
+    q.includes("castiglion") ||
+    q.includes("ferragamo")
+  ) {
+    const brunello = WINE_BOTTLES.find(
+      (w) => w.id === "castiglion-del-bosco-brunello",
+    );
+    if (brunello) {
+      return {
+        text: `**${brunello.vintage} ${brunello.name}** — ${brunello.price}\n\n${brunello.profile}\n\n${brunello.story}\n\n*Best With:* ${brunello.bestWith}\n\n*Brunello Aging Law:* Brunello di Montalcino legally requires a minimum of 5 years before release — including 2 years in large Slavonian oak. One of Italy's most rigorous appellation rules.\n\n*"${brunello.guestOneLiner}"*`,
+      };
+    }
+  }
+
+  // Stags Leap — return Shafer One Point Five
+  if (
+    q.includes("stags leap") ||
+    q.includes("one point five") ||
+    q.includes("iron fist") ||
+    q.includes("velvet glove")
+  ) {
+    const stagsLeap = WINE_BOTTLES.find(
+      (w) => w.id === "shafer-one-point-five",
+    );
+    if (stagsLeap) {
+      return {
+        text: `**${stagsLeap.vintage} ${stagsLeap.name}** — ${stagsLeap.price}\n\n${stagsLeap.profile}\n\n${stagsLeap.story}\n\n*Best With:* ${stagsLeap.bestWith}\n\n*"${stagsLeap.guestOneLiner}"*`,
+      };
+    }
+  }
+
+  // Pinot Noir bottle guidance
+  if (
+    (q.includes("pinot noir") || q.includes("pinot")) &&
+    q.includes("bottle") &&
+    !q.includes("glass")
+  ) {
+    const pinotBottles = WINE_BOTTLES.filter(
+      (w) => w.category === "red" && w.grapes.includes("Pinot Noir"),
+    );
+    return {
+      text: `**Pinot Noir on the Bottle List (${pinotBottles.length} selections):**\n\n${pinotBottles.map((w) => `**${w.vintage} ${w.name}** — ${w.price} | ${w.region}\n*"${w.guestOneLiner}"*`).join("\n\n")}\n\n**Guest guidance:** Crossbarn ($85) for accessibility; Brewer-Clifton or Failla (both $90–95) for precision; Seasmoke Southing ($200) for a special occasion; Kistler ($185) for the pinnacle. Oregon option: Penner-Ash ($120) for guests who want Burgundian finesse.`,
+    };
+  }
+
+  // Cabernet bottle guidance
+  if (
+    (q.includes("cabernet") || q.includes("cab sauv")) &&
+    q.includes("bottle") &&
+    !q.includes("glass")
+  ) {
+    const cabBottles = WINE_BOTTLES.filter(
+      (w) =>
+        w.category === "red" &&
+        (w.grapes.includes("Cabernet") || w.id.includes("cab")),
+    );
+    return {
+      text: `**Cabernet Sauvignon on the Bottle List (${cabBottles.length} selections):**\n\n${cabBottles.map((w) => `**${w.vintage} ${w.name}** — ${w.price} | ${w.region}\n*"${w.guestOneLiner}"*`).join("\n\n")}\n\n**Guest guidance:** Austin Hope ($114) for approachability; Robert Craig ($125) for mountain-sourced value; Aperture ($144) for Bordeaux-like elegance; Shafer One Point Five ($210) for Stags Leap's iron fist/velvet glove; Opus One ($698) for the world-class pinnacle.`,
+    };
+  }
+
+  // Zinfandel — Turley
+  if (q.includes("zinfandel") || q.includes("turley")) {
+    const turley = WINE_BOTTLES.find((w) => w.id === "turley-ueberroth-zin");
+    if (turley) {
+      return {
+        text: `**${turley.vintage} ${turley.name}** — ${turley.price}\n\n${turley.profile}\n\n${turley.story}\n\n*Best With:* ${turley.bestWith}\n\n*"${turley.guestOneLiner}"*`,
+      };
+    }
+  }
+
+  // Syrah — Qupé
+  if (
+    q.includes("syrah") ||
+    q.includes("qupe") ||
+    q.includes("sawyer lindquist") ||
+    q.includes("bob lindquist")
+  ) {
+    const qupe = WINE_BOTTLES.find(
+      (w) => w.id === "qupe-sawyer-lindquist-syrah",
+    );
+    if (qupe) {
+      return {
+        text: `**${qupe.vintage} ${qupe.name}** — ${qupe.price}\n\n${qupe.profile}\n\n${qupe.story}\n\n*Best With:* ${qupe.bestWith}\n\n*"${qupe.guestOneLiner}"*`,
+      };
+    }
+  }
+
+  // Champagne terminology
+  if (
+    q.includes("blanc de blancs") ||
+    q.includes("blanc de noirs") ||
+    q.includes("prestige cuvee") ||
+    q.includes("prestige cuvee") ||
+    q.includes("grower champagne") ||
+    q.includes("rm champagne") ||
+    q.includes("malolactic") ||
+    (q.includes("mlf") && q.includes("champagne")) ||
+    (q.includes("dosage") && q.includes("champagne"))
+  ) {
+    if (q.includes("blanc de blancs")) {
+      return {
+        text: "**Blanc de Blancs** \u2014 A Champagne made exclusively from white grapes, almost always 100% Chardonnay. Characterised by high acidity, chalk-driven minerality, citrus, and brioche \u2014 lighter and more precise than multi-grape blends.\n\nOn our wine bottle list:\n- **Delamotte Blanc de Blancs** ($85/375ml) \u2014 Sister house to Salon, Grand Cru C\u00f4te des Blancs fruit\n- **Schramsberg Blanc de Blancs 2021** ($96) \u2014 America\u2019s original Chardonnay sparkling wine, served at Nixon\u2019s Toast to Peace in 1972",
+      };
+    }
+    if (q.includes("prestige cuvee")) {
+      return {
+        text: "**Prestige Cuv\u00e9e** \u2014 A Champagne house\u2019s finest bottling, produced only in exceptional declared years, from the best Grand Cru fruit, with extended lees aging.\n\nPrestige cuv\u00e9es on our wine bottle list:\n- **Dom P\u00e9rignon 2013** ($475) \u2014 Wine Spectator 96, considered finest of the decade\n- **Belle \u00c9poque Ros\u00e9 2013** ($670) \u2014 Art Nouveau bottle by \u00c9mile Gall\u00e9, only produced in exceptional years\n- **Krug Grand Cuv\u00e9e** ($255/375ml) \u2014 Blended from 100+ wines spanning 10\u201312 vintages",
+      };
+    }
+    if (q.includes("grower champagne") || q.includes("rm champagne")) {
+      return {
+        text: "**Grower Champagne (RM \u2014 R\u00e9coltant-Manipulant)** \u2014 A Champagne produced by a grower who owns their own vines and makes wine from their own fruit, rather than purchasing grapes as large houses do.\n\nOn our bottle list: **Delavenne & Fils Tradition Brut Grand Cru** ($120) \u2014 100% Grand Cru Bouzy and Ambonnay, four generations of family ownership, organic farming, no fining, no filtration.",
+      };
+    }
+    if (
+      q.includes("malolactic") ||
+      (q.includes("mlf") && q.includes("champagne"))
+    ) {
+      return {
+        text: "**Malolactic fermentation (MLF)** converts sharp malic acid into softer lactic acid \u2014 producing the creamy, buttery quality found in most Champagnes. Delavenne & Fils deliberately skips MLF, giving their Grand Cru Champagne a notably taut, fresh, apple-crisp character that is distinctly different from the rounded, creamy style most guests know.",
+      };
+    }
+    if (q.includes("dosage") && q.includes("champagne")) {
+      return {
+        text: "**Dosage** is the small amount of wine and sugar added to Champagne just before final corking to adjust sweetness. Lower dosage = drier, more mineral.\n\nOn our list:\n- Billecart-Salmon Brut Ros\u00e9: ~5g/L \u2014 very dry\n- Brut Champagnes (Taittinger, Ruinart, Delavenne): 7\u201312g/L \u2014 typical dry style",
+      };
+    }
+  }
+
+  // Dom P\u00e9rignon specific query
+  if (q.includes("dom perignon") || q.includes("dom p")) {
+    const dp = WINE_BOTTLES.find((w) => w.id === "dom-perignon-2013");
+    if (dp) {
+      return {
+        text: `**${dp.vintage} ${dp.name}** \u2014 ${dp.price}\n\n${dp.profile}\n\n${dp.story}\n\n*"${dp.guestOneLiner}"*`,
+      };
+    }
+  }
+
+  // Belle \u00c9poque specific query
+  if (
+    q.includes("belle epoque") ||
+    q.includes("belle") ||
+    q.includes("perrier jouet")
+  ) {
+    const be = WINE_BOTTLES.find((w) => w.id === "belle-epoque-rose-2013");
+    if (be) {
+      return {
+        text: `**${be.vintage} ${be.name}** \u2014 ${be.price}\n\n${be.profile}\n\n${be.story}\n\n*"${be.guestOneLiner}"*`,
+      };
+    }
+  }
+
+  // Leflaive / Puligny query
+  if (q.includes("leflaive") || (q.includes("puligny") && q.includes("wine"))) {
+    const lf = WINE_BOTTLES.find(
+      (w) => w.id === "leflaive-puligny-montrachet-2019",
+    );
+    if (lf) {
+      return {
+        text: `**${lf.vintage} ${lf.name}** \u2014 ${lf.price}\n\n${lf.profile}\n\n${lf.story}\n\n*"${lf.guestOneLiner}"*`,
+      };
+    }
+  }
+
+  // Most expensive wine bottle
+  if (
+    q.includes("most expensive wine bottle") ||
+    (q.includes("expensive") && q.includes("wine") && q.includes("bottle"))
+  ) {
+    const sorted = [...WINE_BOTTLES].sort((a, b) => {
+      const aPrice = Number.parseFloat(a.price.replace(/[^0-9.]/g, ""));
+      const bPrice = Number.parseFloat(b.price.replace(/[^0-9.]/g, ""));
+      return bPrice - aPrice;
+    });
+    const top = sorted.slice(0, 3);
+    return {
+      text: `The three most prestigious bottles on the wine list:\n\n${top.map((w) => `**${w.vintage !== "NV" ? `${w.vintage} ` : ""}${w.name}** \u2014 ${w.price}\n*"${w.guestOneLiner}"*`).join("\n\n")}`,
+    };
+  }
+
+  // Wine bottle guest guidance
+  if (
+    q.includes("wine") &&
+    q.includes("bottle") &&
+    (q.includes("recommend") || q.includes("suggest") || q.includes("guidance"))
+  ) {
+    return {
+      text: `**Wine Bottle Guest Guidance:**\n\n${WINE_BOTTLE_GUEST_GUIDANCE.map((g) => `**${g.scenario}**\n\u2192 *${g.recommendation}*\n${g.rationale}`).join("\n\n")}`,
+    };
+  }
+
+  // Shellfish + wine bottle pairing
+  if (
+    q.includes("oyster") &&
+    q.includes("wine") &&
+    !q.includes("sake") &&
+    !q.includes("glass")
+  ) {
+    return {
+      text: "For oysters and shellfish, the definitive bottle choices are:\n\n**Delamotte Blanc de Blancs** ($85/375ml) \u2014 Chalky, saline, and mineral. The textbook aperitif Champagne.\n\n**Domaine William F\u00e8vre Chablis \u2018Domaine\u2019** ($45/375ml) \u2014 Pure Kimmeridgian minerality. Chablis and oysters is one of wine\u2019s greatest pairings.\n\n**Selbach-Oster Riesling Kabinett** ($80) \u2014 Low alcohol, slate minerality, perfectly balanced acidity.",
     };
   }
 

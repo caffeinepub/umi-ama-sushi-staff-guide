@@ -1,10 +1,12 @@
 import { BookOpen, GraduationCap, MessageCircle, Waves } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { ChatMode } from "./components/ChatMode";
+import { GlobalSearch } from "./components/GlobalSearch";
 import { GlossaryTab } from "./components/GlossaryTab";
 import { QuizMode } from "./components/QuizMode";
 import { StudyMode } from "./components/StudyMode";
+import type { StudySection } from "./utils/searchEngine";
 
 type Tab = "study" | "quiz" | "chat" | "glossary";
 
@@ -17,6 +19,17 @@ const TABS: { id: Tab; label: string; icon: React.ElementType }[] = [
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<Tab>("study");
+  const [studySection, setStudySection] = useState<StudySection | undefined>(
+    undefined,
+  );
+
+  const handleSearchNavigate = useCallback(
+    (tab: "study" | "glossary", section?: StudySection) => {
+      setActiveTab(tab as Tab);
+      if (section) setStudySection(section);
+    },
+    [],
+  );
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -24,8 +37,8 @@ export default function App() {
       <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur-sm">
         <div className="max-w-5xl mx-auto px-4">
           {/* Brand row */}
-          <div className="flex items-center justify-between py-4 border-b border-border/50">
-            <div className="flex items-center gap-3">
+          <div className="flex items-center justify-between py-4 border-b border-border/50 gap-4">
+            <div className="flex items-center gap-3 shrink-0">
               <div className="w-8 h-8 rounded-full bg-gold/20 flex items-center justify-center">
                 <span className="font-serif text-sm text-gold leading-none">
                   海
@@ -40,7 +53,8 @@ export default function App() {
                 </p>
               </div>
             </div>
-            <span className="font-sans text-xs text-muted-foreground hidden sm:block">
+            <GlobalSearch onNavigate={handleSearchNavigate} />
+            <span className="font-sans text-xs text-muted-foreground hidden lg:block shrink-0">
               Staff Education Guide
             </span>
           </div>
@@ -102,7 +116,12 @@ export default function App() {
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.25 }}
             >
-              {activeTab === "study" && <StudyMode />}
+              {activeTab === "study" && (
+                <StudyMode
+                  requestedSection={studySection}
+                  onSectionHandled={() => setStudySection(undefined)}
+                />
+              )}
               {activeTab === "quiz" && <QuizMode />}
               {activeTab === "chat" && <ChatMode />}
               {activeTab === "glossary" && <GlossaryTab />}

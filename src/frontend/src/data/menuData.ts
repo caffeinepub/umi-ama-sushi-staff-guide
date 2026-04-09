@@ -430,6 +430,30 @@ export const MENU_SECTIONS: MenuSection[] = [
         isSpecial: true,
         note: "Available for special occasions — please confirm availability with the kitchen.",
       },
+      {
+        name: "Japanese Sponge Cake",
+        description:
+          "A delicate strawberry sponge cake layered with fresh strawberry compote, caramelised rice, and Miso & Tahitian vanilla chantilly, served with fresh strawberry juice and a whole Gaviota strawberry — a refined interplay of tart, sweet, and umami.",
+        ingredients:
+          "Sponge cake, Fresh Strawberry Compote, Caramelise rice, Miso and Tahitian vanilla chantilly, Strawberry juice, Fresh Gaviota strawberry",
+        dietary: [
+          { name: "Dairy", removable: false },
+          { name: "Eggs", removable: false },
+        ],
+        note: "Serve with a dessert spoon. Highlight the miso chantilly as the unexpected element — guests are often intrigued by the savory depth it lends to the dessert.",
+      },
+      {
+        name: "Palate Cleanser",
+        description:
+          "A composed elderflower palate cleanser featuring blackberry and raspberry compote, fresh blackberries and raspberries, white chocolate and puffed rice crisp, elderflower sorbet, and an ethereal elderflower yogurt foam — light, floral, and refreshing.",
+        ingredients:
+          "Blackberry & Raspberry compote, Fresh Blackberries & Raspberries, White Chocolate and Puffed Rice Crisp, Elderflower sorbet, Elderflower Yogurt Foam",
+        dietary: [
+          { name: "Alcohol", removable: false },
+          { name: "Dairy", removable: false },
+        ],
+        note: "Serve with a dessert spoon. This is intended to cleanse the palate between courses — describe it as a light, floral interlude.",
+      },
     ],
   },
 ];
